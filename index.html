@@ -276,7 +276,7 @@
             border-collapse: collapse;
             font-size: 13px;
             background: #fff;
-            min-width: 680px;
+            min-width: 520px;
         }
 
         th,
@@ -520,8 +520,6 @@
                                 <th>新活動前所剩能量</th>
                                 <th>符號1210</th>
                                 <th>1210+3</th>
-                                <th>豬豬145</th>
-                                <th>符槌槌不計</th>
                             </tr>
                         </thead>
                         <tbody id="groupTableBody"></tbody>
@@ -540,108 +538,84 @@
                 min: Infinity,
                 max: Infinity,
                 symbol1210: "3M",
-                type1210Plus3: "1.2M",
-                pig145: "1.2M",
-                hammerNoCount: "1.2M"
+                type1210Plus3: "1.2M"
             },
             {
                 rangeLabel: "0 - 900",
                 min: 0,
                 max: 900,
                 symbol1210: "550K",
-                type1210Plus3: "300K",
-                pig145: "350K",
-                hammerNoCount: "300K"
+                type1210Plus3: "300K"
             },
             {
-                rangeLabel: "1K - 4.9K",
-                min: 1000,
+                rangeLabel: "901 - 4.9K",
+                min: 901,
                 max: 4900,
                 symbol1210: "420K",
-                type1210Plus3: "360K",
-                pig145: "420K",
-                hammerNoCount: "360K"
+                type1210Plus3: "360K"
             },
             {
                 rangeLabel: "5K - 9.9K",
                 min: 5000,
                 max: 9900,
                 symbol1210: "600K",
-                type1210Plus3: "400K",
-                pig145: "435K",
-                hammerNoCount: "400K"
+                type1210Plus3: "400K"
             },
             {
                 rangeLabel: "10K - 19.9K",
                 min: 10000,
                 max: 19900,
                 symbol1210: "960K",
-                type1210Plus3: "560K",
-                pig145: "610K",
-                hammerNoCount: "560K"
+                type1210Plus3: "560K"
             },
             {
                 rangeLabel: "20K - 39.9K",
                 min: 20000,
                 max: 39900,
                 symbol1210: "800K",
-                type1210Plus3: "500K",
-                pig145: "540K",
-                hammerNoCount: "500K"
+                type1210Plus3: "500K"
             },
             {
                 rangeLabel: "40K - 74.9K",
                 min: 40000,
                 max: 74900,
                 symbol1210: "1.2M",
-                type1210Plus3: "800K",
-                pig145: "865K",
-                hammerNoCount: "800K"
+                type1210Plus3: "800K"
             },
             {
                 rangeLabel: "75K - 149K",
                 min: 75000,
                 max: 149000,
                 symbol1210: "1.5M",
-                type1210Plus3: "850K",
-                pig145: "920K",
-                hammerNoCount: "850K"
+                type1210Plus3: "850K"
             },
             {
                 rangeLabel: "150K - 299K",
                 min: 150000,
                 max: 299000,
                 symbol1210: "2M",
-                type1210Plus3: "1.3M",
-                pig145: "1.4M",
-                hammerNoCount: "1.3M"
+                type1210Plus3: "1.3M"
             },
             {
                 rangeLabel: "300K - 499K",
                 min: 300000,
                 max: 499000,
                 symbol1210: "3.4M",
-                type1210Plus3: "2.1M",
-                pig145: "2.3M",
-                hammerNoCount: "2.1M"
+                type1210Plus3: "2.1M"
             },
             {
                 rangeLabel: "500K - 999K",
                 min: 500000,
                 max: 999000,
                 symbol1210: "4.8M-1",
-                type1210Plus3: "3M-1",
-                pig145: "3.2M-1",
-                hammerNoCount: "3M-1"
+                type1210Plus3: "3M-1"
             },
             {
                 rangeLabel: "1M 以上",
                 min: 1000000,
                 max: Infinity,
                 symbol1210: "4.8M-2",
-                type1210Plus3: "3M-2",
-                pig145: "3.2M-2",
-                hammerNoCount: "3M-2"
+                type1210Plus3: "3M-2"
             }
         ];
 
@@ -872,8 +846,6 @@
                     <td>${row.rangeLabel}</td>
                     <td>${row.symbol1210}</td>
                     <td>${row.type1210Plus3}</td>
-                    <td>${row.pig145}</td>
-                    <td>${row.hammerNoCount}</td>
                 `;
 
                 tbody.appendChild(tr);
