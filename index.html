@@ -17,6 +17,9 @@
             --text-main: #1e293b;
             --text-muted: #64748b;
             --border: #e2e8f0;
+            --success: #16a34a;
+            --warning: #f59e0b;
+            --danger: #dc2626;
             --radius: 18px;
             --shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
         }
@@ -25,15 +28,8 @@
             box-sizing: border-box;
         }
 
-        html,
         body {
             margin: 0;
-            width: 100%;
-            min-height: 100%;
-            overflow: hidden;
-        }
-
-        body {
             font-family: "Microsoft JhengHei", "Noto Sans TC", Arial, sans-serif;
             background:
                 radial-gradient(circle at top left, rgba(37, 99, 235, 0.35), transparent 32%),
@@ -41,31 +37,17 @@
                 linear-gradient(135deg, #020617, #0f172a 45%, #111827);
             color: var(--text-main);
             min-height: 100vh;
-        }
-
-        .scale-viewport {
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-        }
-
-        .scale-stage {
-            width: 1180px;
-            transform-origin: top center;
+            padding: 24px;
         }
 
         .page {
-            width: 1132px;
+            max-width: 1180px;
             margin: 0 auto;
-            padding: 24px 0;
         }
 
         header {
             color: #fff;
-            margin-bottom: 22px;
+            margin-bottom: 28px;
             display: grid;
             grid-template-columns: 220px minmax(0, 1fr) 220px;
             align-items: center;
@@ -76,9 +58,10 @@
             grid-column: 2;
             margin: 0;
             text-align: center;
-            font-size: 42px;
+            font-size: clamp(28px, 3.4vw, 42px);
             letter-spacing: 1px;
             line-height: 1.2;
+            min-width: 0;
         }
 
         .language-switcher {
@@ -110,64 +93,9 @@
             border: 1px solid rgba(255, 255, 255, 0.35);
         }
 
-        .result-summary {
-            margin: 0 0 22px;
-            display: grid;
-            grid-template-columns: 1.1fr 0.9fr 1fr;
-            gap: 14px;
-        }
-
-        .summary-box {
-            background: rgba(255, 255, 255, 0.96);
-            border-radius: 18px;
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(255, 255, 255, 0.65);
-            padding: 18px 20px;
-            text-align: center;
-        }
-
-        .summary-box.primary {
-            background: linear-gradient(135deg, #1d4ed8, #7c3aed);
-            color: #fff;
-        }
-
-        .summary-label {
-            font-size: 13px;
-            font-weight: 800;
-            color: var(--text-muted);
-            margin-bottom: 7px;
-        }
-
-        .summary-box.primary .summary-label {
-            color: #dbeafe;
-        }
-
-        .summary-value {
-            font-size: 30px;
-            font-weight: 900;
-            color: #0f172a;
-            word-break: break-word;
-        }
-
-        .summary-box.primary .summary-value {
-            color: #fff;
-            font-size: 36px;
-        }
-
-        .summary-sub {
-            margin-top: 8px;
-            font-size: 13px;
-            color: var(--text-muted);
-            line-height: 1.5;
-        }
-
-        .summary-box.primary .summary-sub {
-            color: #e0e7ff;
-        }
-
         .layout {
             display: grid;
-            grid-template-columns: 1fr;
+            grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
             gap: 22px;
             align-items: start;
         }
@@ -234,6 +162,7 @@
             display: flex;
             flex-direction: column;
             gap: 7px;
+            min-width: 0;
         }
 
         label {
@@ -318,6 +247,93 @@
             object-fit: contain;
         }
 
+        .result-panel {
+            position: sticky;
+            top: 20px;
+        }
+
+        .total-box {
+            background: linear-gradient(135deg, #1d4ed8, #7c3aed);
+            color: #fff;
+            padding: 24px;
+            border-radius: 18px;
+            text-align: center;
+            margin-bottom: 18px;
+            box-shadow: 0 14px 35px rgba(37, 99, 235, 0.35);
+        }
+
+        .total-box .label {
+            font-size: 14px;
+            color: #dbeafe;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .total-box .value {
+            font-size: clamp(34px, 5vw, 46px);
+            font-weight: 900;
+            letter-spacing: 1px;
+            word-break: break-word;
+        }
+
+        .total-box .sub {
+            margin-top: 8px;
+            color: #e0e7ff;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .group-box {
+            border-radius: 18px;
+            padding: 18px;
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            margin-bottom: 16px;
+        }
+
+        .group-box h3 {
+            margin: 0 0 12px;
+            font-size: 18px;
+        }
+
+        .group-name {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--accent);
+            margin: 8px 0;
+        }
+
+        .small-list {
+            display: grid;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .small-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+
+        .small-row strong {
+            color: #0f172a;
+        }
+
+        .notice {
+            padding: 14px 15px;
+            border-radius: 14px;
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            color: #9a3412;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
         .table-wrap {
             overflow-x: auto;
             margin-top: 14px;
@@ -372,296 +388,539 @@
             background: var(--border);
             margin: 24px 0;
         }
+
+        /* 手機版調整：結果上移、隱藏基礎能量、道具區塊 2 欄顯示 */
+        @media (max-width: 920px) {
+            body {
+                padding: 14px;
+                overflow-x: hidden;
+            }
+
+            .page {
+                max-width: 100%;
+                width: 100%;
+            }
+
+            header {
+                display: flex;
+                flex-direction: column;
+                gap: 14px;
+                text-align: center;
+                margin-bottom: 18px;
+            }
+
+            h1 {
+                font-size: clamp(26px, 7vw, 38px);
+            }
+
+            .language-switcher {
+                justify-self: auto;
+                order: -1;
+            }
+
+            .layout {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .result-panel {
+                position: static;
+                order: -1;
+            }
+
+            .input-card {
+                order: 1;
+            }
+
+            .base-energy-block {
+                display: block;
+            }
+
+            .base-energy-block .divider {
+                display: none;
+            }
+
+            .card-header {
+                padding: 15px 16px;
+            }
+
+            .card-header h2 {
+                font-size: 19px;
+            }
+
+            .card-header p {
+                font-size: 13px;
+                line-height: 1.5;
+            }
+
+            .card-body {
+                padding: 16px;
+            }
+
+            .section-title {
+                font-size: 17px;
+                margin: 20px 0 12px;
+            }
+
+            .grid-3 {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 10px;
+            }
+
+            .field {
+                gap: 6px;
+            }
+
+            label {
+                font-size: 12px;
+                line-height: 1.25;
+                gap: 3px;
+            }
+
+            .hint {
+                font-size: 11px;
+            }
+
+            .item-icon {
+                width: 1.2em;
+                height: 1.2em;
+            }
+
+            input,
+            select {
+                font-size: 16px;
+                padding: 10px 10px;
+                border-radius: 10px;
+            }
+
+            .total-box {
+                padding: 18px;
+                margin-bottom: 12px;
+            }
+
+            .total-box .value {
+                font-size: 34px;
+            }
+
+            .total-box .sub {
+                font-size: 12px;
+                line-height: 1.45;
+            }
+
+            .group-box {
+                padding: 14px;
+                margin-bottom: 0;
+            }
+
+            .group-box h3 {
+                font-size: 16px;
+                margin-bottom: 8px;
+            }
+
+            .group-name {
+                font-size: 24px;
+                margin: 6px 0;
+            }
+
+            .notice {
+                padding: 11px 12px;
+                font-size: 12px;
+                line-height: 1.55;
+            }
+
+            .small-list {
+                gap: 7px;
+                margin-top: 10px;
+            }
+
+            .small-row {
+                padding: 9px 10px;
+                font-size: 12px;
+            }
+
+            .table-wrap {
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 10px;
+            }
+
+            header {
+                margin-bottom: 14px;
+            }
+
+            h1 {
+                font-size: clamp(24px, 7vw, 34px);
+            }
+
+            .language-switcher {
+                padding: 7px 10px;
+            }
+
+            .language-switcher label {
+                font-size: 12px;
+            }
+
+            .language-switcher select {
+                min-width: 120px;
+                font-size: 12px;
+                padding: 7px 9px;
+            }
+
+            .grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .grid-3 {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 9px;
+            }
+
+            .card {
+                border-radius: 15px;
+            }
+
+            .card-header {
+                padding: 14px;
+            }
+
+            .card-body {
+                padding: 14px;
+            }
+
+            .divider {
+                margin: 18px 0;
+            }
+
+            input,
+            select {
+                font-size: 16px;
+                padding: 9px 9px;
+            }
+
+            .total-box {
+                border-radius: 15px;
+                padding: 16px;
+            }
+
+            .group-box {
+                border-radius: 15px;
+            }
+
+            .demo-image {
+                max-width: 260px;
+            }
+
+            .table-wrap {
+                overflow-x: hidden;
+            }
+
+            table {
+                min-width: 0;
+                font-size: 13px;
+            }
+
+            th,
+            td {
+                padding: 10px 8px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            body {
+                padding: 8px;
+            }
+
+            .grid-3 {
+                gap: 8px;
+            }
+
+            label {
+                font-size: 11.5px;
+            }
+
+            .hint {
+                font-size: 10.5px;
+            }
+
+            input,
+            select {
+                font-size: 16px;
+                padding: 8px;
+            }
+
+            .total-box .value {
+                font-size: 30px;
+            }
+
+            .group-name {
+                font-size: 22px;
+            }
+
+            .small-row {
+                font-size: 11.5px;
+            }
+        }
     </style>
 </head>
 
 <body>
-    <div class="scale-viewport" id="scaleViewport">
-        <div class="scale-stage" id="scaleStage">
-            <div class="page">
-                <header>
-                    <div class="language-switcher">
-                        <label for="languageSelect" data-i18n="languageLabel">語言</label>
-                        <select id="languageSelect" aria-label="Language">
-                            <option value="zh-Hant">繁體中文</option>
-                            <option value="en">English</option>
-                            <option value="vi">Tiếng Việt</option>
-                        </select>
-                    </div>
-
-                    <h1 data-i18n="appTitle">活動道具能量換算器</h1>
-                </header>
-
-                <section class="result-summary">
-                    <div class="summary-box primary">
-                        <div class="summary-label" data-i18n="playerTotalEnergy">玩家總能量</div>
-                        <div class="summary-value" id="totalEnergyText">0</div>
-                        <div class="summary-sub" id="totalEnergyDetail">基本 + 額外 + 道具</div>
-                    </div>
-
-                    <div class="summary-box">
-                        <div class="summary-label" data-i18n="nextGroupTitle">下一週預估分組</div>
-                        <div class="summary-value" id="nextGroupText">尚未計算</div>
-                        <div class="summary-sub" id="groupDesc">請輸入資料後自動判斷。</div>
-                    </div>
-
-                    <div class="summary-box">
-                        <div class="summary-label" data-i18n="itemConvertedEnergy">道具換算能量</div>
-                        <div class="summary-value" id="itemEnergyText">0</div>
-                        <div class="summary-sub">
-                            <span data-i18n="basePlusExtraEnergy">基本 + 額外能量</span>：
-                            <strong id="baseExtraText">0</strong>
-                        </div>
-                    </div>
-                </section>
-
-                <main class="layout">
-                    <section class="card">
-                        <div class="card-header">
-                            <h2><span>🧮</span><span data-i18n="inputTitle">輸入資料</span></h2>
-                            <p data-i18n="inputDesc">先填寫基本能量與額外能量，再輸入你剩下的活動道具數量。</p>
-                        </div>
-
-                        <div class="card-body">
-                            <h3 class="section-title">
-                                <img class="item-icon" src="images/energy.png" alt="Energy">
-                                <span data-i18n="baseEnergySection">基礎能量</span>
-                            </h3>
-
-                            <div class="demo-image-wrap">
-                                <img class="demo-image" src="images/total-energy-demo.png" alt="Base energy demo">
-                            </div>
-
-                            <div class="grid">
-                                <div class="field">
-                                    <label for="baseEnergy">
-                                        <span data-i18n="baseEnergy">基本能量</span>
-                                        <span class="hint" data-i18n="integerOnly">限整數</span>
-                                    </label>
-                                    <div class="input-group">
-                                        <input id="baseEnergy" type="text" inputmode="numeric" />
-                                        <span data-i18n="energyUnit">能量</span>
-                                    </div>
-                                </div>
-
-                                <div class="field">
-                                    <label for="extraEnergy">
-                                        <span data-i18n="extraEnergy">額外能量</span>
-                                        <span class="hint" data-i18n="integerOnly">限整數</span>
-                                    </label>
-                                    <div class="input-group">
-                                        <input id="extraEnergy" type="text" inputmode="numeric" />
-                                        <span data-i18n="energyUnit">能量</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="divider"></div>
-
-                            <h3 class="section-title" data-i18n="magicKingdomSection">🏰 魔法王國剩餘能量</h3>
-
-                            <div class="grid-3">
-                                <div class="field">
-                                    <label for="bronzeKey">
-                                        <img class="item-icon" src="images/bronze-key.png" alt="Bronze Key">
-                                        <span data-i18n="bronzeKey">銅鑰匙</span> <span class="hint">1:105</span>
-                                    </label>
-                                    <input id="bronzeKey" type="text" inputmode="numeric" placeholder="0" />
-                                </div>
-
-                                <div class="field">
-                                    <label for="goldKey">
-                                        <img class="item-icon" src="images/gold-key.png" alt="Gold Key">
-                                        <span data-i18n="goldKey">金鑰匙</span> <span class="hint">1:220</span>
-                                    </label>
-                                    <input id="goldKey" type="text" inputmode="numeric" placeholder="0" />
-                                </div>
-
-                                <div class="field">
-                                    <label for="bluePotion">
-                                        <img class="item-icon" src="images/blue-potion.png" alt="Blue Potion">
-                                        <span data-i18n="bluePotion">藍色藥水</span> <span class="hint">500:1</span>
-                                    </label>
-                                    <input id="bluePotion" type="text" inputmode="text" autocomplete="off"
-                                        autocapitalize="characters" placeholder="例如：500k 或 1.2M"
-                                        data-i18n-placeholder="decimalPlaceholder" />
-                                </div>
-
-                                <div class="field">
-                                    <label for="redPotion">
-                                        <img class="item-icon" src="images/red-potion.png" alt="Red Potion">
-                                        <span data-i18n="redPotion">紅色藥水</span> <span class="hint">50000:1</span>
-                                    </label>
-                                    <input id="redPotion" type="text" inputmode="text" autocomplete="off"
-                                        autocapitalize="characters" placeholder="例如：500k 或 1.2M"
-                                        data-i18n-placeholder="decimalPlaceholder" />
-                                </div>
-
-                                <div class="field">
-                                    <label for="bomb">
-                                        <img class="item-icon" src="images/bomb.png" alt="Bomb">
-                                        <span data-i18n="bomb">炸彈</span> <span class="hint">1:50</span>
-                                    </label>
-                                    <input id="bomb" type="text" inputmode="numeric" placeholder="0" />
-                                </div>
-
-                                <div class="field">
-                                    <label for="cannon">
-                                        <img class="item-icon" src="images/cannon.png" alt="Cannon">
-                                        <span data-i18n="cannon">砲台</span> <span class="hint">1:100</span>
-                                    </label>
-                                    <input id="cannon" type="text" inputmode="numeric" placeholder="0" />
-                                </div>
-                            </div>
-
-                            <div class="divider"></div>
-
-                            <h3 class="section-title" data-i18n="normalItemsSection">📌 一般活動道具</h3>
-
-                            <div class="grid-3">
-                                <div class="field">
-                                    <label for="cookie">
-                                        <img class="item-icon" src="images/cookie.png" alt="Cookie">
-                                        <span data-i18n="cookie">小徑餅乾</span> <span class="hint">1:5</span>
-                                    </label>
-                                    <input id="cookie" type="text" inputmode="numeric" placeholder="0" />
-                                </div>
-
-                                <div class="field">
-                                    <label for="caveKey">
-                                        <img class="item-icon" src="images/cave-key.png" alt="Cave Key">
-                                        <span data-i18n="caveKey">洞穴鑰匙</span> <span class="hint">1:10</span>
-                                    </label>
-                                    <input id="caveKey" type="text" inputmode="numeric" placeholder="0" />
-                                </div>
-
-                                <div class="field">
-                                    <label for="wealthHammer">
-                                        <img class="item-icon" src="images/wealth-hammer.png" alt="Wealth Hammer">
-                                        <span data-i18n="wealthHammer">財富寶鎚</span> <span class="hint">1:10</span>
-                                    </label>
-                                    <input id="wealthHammer" type="text" inputmode="numeric" placeholder="0" />
-                                </div>
-
-                                <div class="field">
-                                    <label for="mergeLightning">
-                                        <img class="item-icon" src="images/merge-lightning.png" alt="Merge Lightning">
-                                        <span data-i18n="mergeLightning">合併閃電</span> <span class="hint">1:10</span>
-                                    </label>
-                                    <input id="mergeLightning" type="text" inputmode="numeric" placeholder="0" />
-                                </div>
-
-                                <div class="field">
-                                    <label for="cosmicCoin">
-                                        <img class="item-icon" src="images/cosmic-coin.png" alt="Cosmic Coin">
-                                        <span data-i18n="cosmicCoin">宇宙代幣</span> <span class="hint">1:10</span>
-                                    </label>
-                                    <input id="cosmicCoin" type="text" inputmode="numeric" placeholder="0" />
-                                </div>
-
-                                <div class="field">
-                                    <label for="shovel">
-                                        <img class="item-icon" src="images/shovel.png" alt="Shovel">
-                                        <span data-i18n="shovel">鏟子</span> <span class="hint">1:10</span>
-                                    </label>
-                                    <input id="shovel" type="text" inputmode="numeric" placeholder="0" />
-                                </div>
-
-                                <div class="field">
-                                    <label for="bossCoin">
-                                        <img class="item-icon" src="images/boss-coin.png" alt="Boss Token">
-                                        <span data-i18n="bossCoin">Boss 代幣</span> <span class="hint">100:1</span>
-                                    </label>
-                                    <input id="bossCoin" type="text" inputmode="numeric" placeholder="0" />
-                                </div>
-
-                                <div class="field">
-                                    <label for="farmCoin">
-                                        <img class="item-icon" src="images/farm-coin.png" alt="Farm Coin">
-                                        <span data-i18n="farmCoin">耕種花幣</span> <span class="hint">100:1</span>
-                                    </label>
-                                    <input id="farmCoin" type="text" inputmode="numeric" placeholder="0" />
-                                </div>
-
-                                <div class="field">
-                                    <label for="avalancheCoin">
-                                        <img class="item-icon" src="images/avalanche-coin.png" alt="Avalanche Token">
-                                        <span data-i18n="avalancheCoin">雪崩代幣</span> <span class="hint">20:1</span>
-                                    </label>
-                                    <input id="avalancheCoin" type="text" inputmode="numeric" placeholder="0" />
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                </main>
-
-                <section class="card" style="margin-top:22px;">
-                    <div class="card-header">
-                        <h2><span>🗂️</span><span data-i18n="groupTableTitle">分組內容對照表</span></h2>
-                        <p data-i18n="groupTableDesc">表格會標示目前總能量所在列。</p>
-                    </div>
-
-                    <div class="card-body">
-                        <div class="table-wrap">
-                            <table id="groupTable">
-                                <thead>
-                                    <tr>
-                                        <th data-i18n="energyBeforeNewEvent">新活動前所剩能量</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="groupTableBody"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </section>
-
-                <footer id="footerText"></footer>
+    <div class="page">
+        <header>
+            <div class="language-switcher">
+                <label for="languageSelect" data-i18n="languageLabel">語言</label>
+                <select id="languageSelect" aria-label="Language">
+                    <option value="zh-Hant">繁體中文</option>
+                    <option value="en">English</option>
+                    <option value="vi">Tiếng Việt</option>
+                </select>
             </div>
-        </div>
+
+            <h1 data-i18n="appTitle">活動道具能量換算器</h1>
+        </header>
+
+        <main class="layout">
+            <section class="card input-card">
+                <div class="card-header">
+                    <h2><span>🧮</span><span data-i18n="inputTitle">輸入資料</span></h2>
+                    <p data-i18n="inputDesc">先填寫基本能量與額外能量，再輸入你剩下的活動道具數量。</p>
+                </div>
+
+                <div class="card-body">
+                    <h3 class="section-title" data-i18n="magicKingdomSection">🏰 魔法王國剩餘能量</h3>
+
+                    <div class="grid-3">
+                        <div class="field">
+                            <label for="bronzeKey">
+                                <img class="item-icon" src="images/bronze-key.png" alt="Bronze Key">
+                                <span data-i18n="bronzeKey">銅鑰匙</span> <span class="hint">1:105</span>
+                            </label>
+                            <input id="bronzeKey" type="text" inputmode="numeric" placeholder="0" />
+                        </div>
+
+                        <div class="field">
+                            <label for="goldKey">
+                                <img class="item-icon" src="images/gold-key.png" alt="Gold Key">
+                                <span data-i18n="goldKey">金鑰匙</span> <span class="hint">1:220</span>
+                            </label>
+                            <input id="goldKey" type="text" inputmode="numeric" placeholder="0" />
+                        </div>
+
+                        <div class="field">
+                            <label for="bluePotion">
+                                <img class="item-icon" src="images/blue-potion.png" alt="Blue Potion">
+                                <span data-i18n="bluePotion">藍色藥水</span> <span class="hint">500:1</span>
+                            </label>
+                            <input id="bluePotion" type="text" inputmode="decimal" placeholder="例如：500k 或 1.2M"
+                                data-i18n-placeholder="decimalPlaceholder" />
+                        </div>
+
+                        <div class="field">
+                            <label for="redPotion">
+                                <img class="item-icon" src="images/red-potion.png" alt="Red Potion">
+                                <span data-i18n="redPotion">紅色藥水</span> <span class="hint">50000:1</span>
+                            </label>
+                            <input id="redPotion" type="text" inputmode="decimal" placeholder="例如：500k 或 1.2M"
+                                data-i18n-placeholder="decimalPlaceholder" />
+                        </div>
+
+                        <div class="field">
+                            <label for="bomb">
+                                <img class="item-icon" src="images/bomb.png" alt="Bomb">
+                                <span data-i18n="bomb">炸彈</span> <span class="hint">1:50</span>
+                            </label>
+                            <input id="bomb" type="text" inputmode="numeric" placeholder="0" />
+                        </div>
+
+                        <div class="field">
+                            <label for="cannon">
+                                <img class="item-icon" src="images/cannon.png" alt="Cannon">
+                                <span data-i18n="cannon">砲台</span> <span class="hint">1:100</span>
+                            </label>
+                            <input id="cannon" type="text" inputmode="numeric" placeholder="0" />
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <h3 class="section-title" data-i18n="normalItemsSection">📌 一般活動道具</h3>
+
+                    <div class="grid-3">
+                        <div class="field">
+                            <label for="cookie">
+                                <img class="item-icon" src="images/cookie.png" alt="Cookie">
+                                <span data-i18n="cookie">小徑餅乾</span> <span class="hint">1:5</span>
+                            </label>
+                            <input id="cookie" type="text" inputmode="numeric" placeholder="0" />
+                        </div>
+
+                        <div class="field">
+                            <label for="caveKey">
+                                <img class="item-icon" src="images/cave-key.png" alt="Cave Key">
+                                <span data-i18n="caveKey">洞穴鑰匙</span> <span class="hint">1:10</span>
+                            </label>
+                            <input id="caveKey" type="text" inputmode="numeric" placeholder="0" />
+                        </div>
+
+                        <div class="field">
+                            <label for="wealthHammer">
+                                <img class="item-icon" src="images/wealth-hammer.png" alt="Wealth Hammer">
+                                <span data-i18n="wealthHammer">財富寶鎚</span> <span class="hint">1:10</span>
+                            </label>
+                            <input id="wealthHammer" type="text" inputmode="numeric" placeholder="0" />
+                        </div>
+
+                        <div class="field">
+                            <label for="mergeLightning">
+                                <img class="item-icon" src="images/merge-lightning.png" alt="Merge Lightning">
+                                <span data-i18n="mergeLightning">合併閃電</span> <span class="hint">1:10</span>
+                            </label>
+                            <input id="mergeLightning" type="text" inputmode="numeric" placeholder="0" />
+                        </div>
+
+                        <div class="field">
+                            <label for="cosmicCoin">
+                                <img class="item-icon" src="images/cosmic-coin.png" alt="Cosmic Coin">
+                                <span data-i18n="cosmicCoin">宇宙代幣</span> <span class="hint">1:10</span>
+                            </label>
+                            <input id="cosmicCoin" type="text" inputmode="numeric" placeholder="0" />
+                        </div>
+
+                        <div class="field">
+                            <label for="shovel">
+                                <img class="item-icon" src="images/shovel.png" alt="Shovel">
+                                <span data-i18n="shovel">鏟子</span> <span class="hint">1:10</span>
+                            </label>
+                            <input id="shovel" type="text" inputmode="numeric" placeholder="0" />
+                        </div>
+
+                        <div class="field">
+                            <label for="bossCoin">
+                                <img class="item-icon" src="images/boss-coin.png" alt="Boss Token">
+                                <span data-i18n="bossCoin">Boss 代幣</span> <span class="hint">100:1</span>
+                            </label>
+                            <input id="bossCoin" type="text" inputmode="numeric" placeholder="0" />
+                        </div>
+
+                        <div class="field">
+                            <label for="farmCoin">
+                                <img class="item-icon" src="images/farm-coin.png" alt="Farm Coin">
+                                <span data-i18n="farmCoin">耕種花幣</span> <span class="hint">100:1</span>
+                            </label>
+                            <input id="farmCoin" type="text" inputmode="numeric" placeholder="0" />
+                        </div>
+
+                        <div class="field">
+                            <label for="avalancheCoin">
+                                <img class="item-icon" src="images/avalanche-coin.png" alt="Avalanche Token">
+                                <span data-i18n="avalancheCoin">雪崩代幣</span> <span class="hint">20:1</span>
+                            </label>
+                            <input id="avalancheCoin" type="text" inputmode="numeric" placeholder="0" />
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <div class="base-energy-block">
+                        <h3 class="section-title">
+                            <img class="item-icon" src="images/energy.png" alt="Energy">
+                            <span data-i18n="baseEnergySection">基礎能量</span>
+                        </h3>
+
+                        <div class="demo-image-wrap">
+                            <img class="demo-image" src="images/total-energy-demo.png" alt="Base energy demo">
+                        </div>
+
+                        <div class="grid">
+                            <div class="field">
+                                <label for="baseEnergy">
+                                    <span data-i18n="baseEnergy">基本能量</span>
+                                    <span class="hint" data-i18n="integerOnly">限整數</span>
+                                </label>
+                                <div class="input-group">
+                                    <input id="baseEnergy" type="text" inputmode="numeric" />
+                                    <span data-i18n="energyUnit">能量</span>
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label for="extraEnergy">
+                                    <span data-i18n="extraEnergy">額外能量</span>
+                                    <span class="hint" data-i18n="integerOnly">限整數</span>
+                                </label>
+                                <div class="input-group">
+                                    <input id="extraEnergy" type="text" inputmode="numeric" />
+                                    <span data-i18n="energyUnit">能量</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <aside class="card result-panel">
+                <div class="card-header">
+                    <h2><span>📣</span><span data-i18n="resultTitle">換算結果</span></h2>
+                    <p data-i18n="resultDesc">結果計算對照下一週分組。</p>
+                </div>
+
+                <div class="card-body">
+                    <div class="total-box">
+                        <div class="label" data-i18n="playerTotalEnergy">玩家總能量</div>
+                        <div class="value" id="totalEnergyText">0</div>
+                        <div class="sub" id="totalEnergyDetail">基準能量 + 額外能量 + 道具換算能量</div>
+                    </div>
+
+                    <div class="group-box">
+                        <h3 data-i18n="nextGroupTitle">下一週預估分組</h3>
+                        <div class="group-name" id="nextGroupText">尚未計算</div>
+                        <div id="groupDesc" class="notice">
+                            請輸入能量或道具數量後，系統會依照總能量判斷所在分組。
+                        </div>
+
+                        <div class="small-list">
+                            <div class="small-row">
+                                <span data-i18n="itemConvertedEnergy">道具換算能量</span>
+                                <strong id="itemEnergyText">0</strong>
+                            </div>
+                            <div class="small-row">
+                                <span data-i18n="basePlusExtraEnergy">基本 + 額外能量</span>
+                                <strong id="baseExtraText">0</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <section class="card" style="margin-top:22px;">
+            <div class="card-header">
+                <h2><span>🗂️</span><span data-i18n="groupTableTitle">分組內容對照表</span></h2>
+                <p data-i18n="groupTableDesc">表格會標示目前總能量所在列。</p>
+            </div>
+
+            <div class="card-body">
+                <div class="table-wrap">
+                    <table id="groupTable">
+                        <thead>
+                            <tr>
+                                <th data-i18n="energyBeforeNewEvent">新活動前所剩能量</th>
+                            </tr>
+                        </thead>
+                        <tbody id="groupTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <footer id="footerText"></footer>
     </div>
 
     <script>
-        const DESIGN_WIDTH = 1180;
-
-        function updatePageScale() {
-            const scaleViewport = document.getElementById("scaleViewport");
-            const scaleStage = document.getElementById("scaleStage");
-
-            if (!scaleViewport || !scaleStage) return;
-
-            scaleStage.style.transform = "scale(1)";
-
-            const viewportWidth = window.innerWidth;
-            const viewportHeight = window.innerHeight;
-
-            const stageWidth = DESIGN_WIDTH;
-            const stageHeight = scaleStage.scrollHeight;
-
-            const isMobile = viewportWidth < DESIGN_WIDTH;
-
-            let scale = 1;
-
-            if (isMobile) {
-                const scaleX = viewportWidth / stageWidth;
-                const scaleY = viewportHeight / stageHeight;
-                scale = Math.min(scaleX, scaleY);
-            }
-
-            scaleStage.style.transform = `scale(${scale})`;
-
-            if (isMobile) {
-                scaleViewport.style.height = "100vh";
-                scaleViewport.style.alignItems = "flex-start";
-                document.documentElement.style.overflow = "hidden";
-                document.body.style.overflow = "hidden";
-            } else {
-                scaleViewport.style.height = "100vh";
-                scaleViewport.style.alignItems = "flex-start";
-                document.documentElement.style.overflow = "hidden";
-                document.body.style.overflow = "hidden";
-            }
-        }
-
         const translations = {
             "zh-Hant": {
                 pageTitle: "Coin Master 活動道具能量換算器",
@@ -692,20 +951,25 @@
                 farmCoin: "耕種花幣",
                 avalancheCoin: "雪崩代幣",
                 decimalPlaceholder: "例如：500k 或 1.2M",
+                resultTitle: "換算結果",
+                resultDesc: "結果計算對照下一週分組。",
                 playerTotalEnergy: "玩家總能量",
+                totalDetailDefault: "基準能量 + 額外能量 + 道具換算能量",
                 nextGroupTitle: "下一週預估分組",
+                notCalculated: "尚未計算",
+                groupNoticeDefault: "請輸入能量或道具數量後，系統會依照總能量判斷所在分組。",
                 itemConvertedEnergy: "道具換算能量",
                 basePlusExtraEnergy: "基本 + 額外能量",
                 groupTableTitle: "分組內容對照表",
                 groupTableDesc: "表格會標示目前總能量所在列。",
                 energyBeforeNewEvent: "新活動前所剩能量",
-                noMatchingGroup: "未落入區間",
+                noMatchingGroup: "未落入表格區間",
                 totalLabelBase: "基本",
                 totalLabelExtra: "額外",
                 totalLabelItems: "道具",
-                totalText: total => `總能量 ${total}，表格已標示所在區間。`,
-                currentTotalText: total => `目前總能量 ${total}。`,
-                footer: year => `Copyright © ${year} 大佬群＆Coin999-長長久久`
+                groupDescMatched: (total, group) => `你的新活動前所剩能量為 <strong>${total}</strong>，預估會落在 <strong>${group}</strong> 這一組。<br>下方表格已標示目前所在區間。`,
+                groupDescNoMatch: (total) => `目前總能量為 <strong>${total}</strong>，沒有對應到表格中的明確區間。`,
+                footer: (year) => `Copyright © ${year} 大佬群＆Coin999-長長久久`
             },
             en: {
                 pageTitle: "Coin Master Event Item Energy Calculator",
@@ -736,8 +1000,13 @@
                 farmCoin: "Farm Coin",
                 avalancheCoin: "Avalanche Token",
                 decimalPlaceholder: "Example: 500k or 1.2M",
+                resultTitle: "Result",
+                resultDesc: "Calculated result based on next week’s grouping.",
                 playerTotalEnergy: "Player Total Energy",
+                totalDetailDefault: "Base energy + extra energy + item converted energy",
                 nextGroupTitle: "Estimated Group Next Week",
+                notCalculated: "Not calculated yet",
+                groupNoticeDefault: "Enter energy or item quantities, and the system will determine the group based on total energy.",
                 itemConvertedEnergy: "Item Converted Energy",
                 basePlusExtraEnergy: "Base + Extra Energy",
                 groupTableTitle: "Group Reference Table",
@@ -747,9 +1016,9 @@
                 totalLabelBase: "Base",
                 totalLabelExtra: "Extra",
                 totalLabelItems: "Items",
-                totalText: total => `Total ${total}. The matching range is highlighted.`,
-                currentTotalText: total => `Current total ${total}.`,
-                footer: year => `Copyright © ${year} 大佬群＆Coin999-長長久久`
+                groupDescMatched: (total, group) => `Your energy before the new event is <strong>${total}</strong>, estimated to be in the <strong>${group}</strong> group.<br>The matching range is highlighted in the table below.`,
+                groupDescNoMatch: (total) => `Your current total energy is <strong>${total}</strong>, but it does not match a defined table range.`,
+                footer: (year) => `Copyright © ${year} 大佬群＆Coin999-長長久久`
             },
             vi: {
                 pageTitle: "Công cụ quy đổi năng lượng vật phẩm Coin Master",
@@ -780,8 +1049,13 @@
                 farmCoin: "Xu nông trại",
                 avalancheCoin: "Xu tuyết lở",
                 decimalPlaceholder: "Ví dụ: 500k hoặc 1.2M",
+                resultTitle: "Kết quả quy đổi",
+                resultDesc: "Kết quả được tính để đối chiếu nhóm tuần sau.",
                 playerTotalEnergy: "Tổng năng lượng người chơi",
+                totalDetailDefault: "Năng lượng cơ bản + năng lượng thêm + năng lượng quy đổi từ vật phẩm",
                 nextGroupTitle: "Nhóm dự kiến tuần sau",
+                notCalculated: "Chưa tính",
+                groupNoticeDefault: "Nhập năng lượng hoặc số lượng vật phẩm, hệ thống sẽ xác định nhóm dựa trên tổng năng lượng.",
                 itemConvertedEnergy: "Năng lượng quy đổi từ vật phẩm",
                 basePlusExtraEnergy: "Cơ bản + thêm",
                 groupTableTitle: "Bảng đối chiếu nhóm",
@@ -791,9 +1065,9 @@
                 totalLabelBase: "Cơ bản",
                 totalLabelExtra: "Thêm",
                 totalLabelItems: "Vật phẩm",
-                totalText: total => `Tổng ${total}, bảng đã đánh dấu khoảng tương ứng.`,
-                currentTotalText: total => `Tổng hiện tại ${total}.`,
-                footer: year => `Copyright © ${year} 大佬群＆Coin999-長長久久`
+                groupDescMatched: (total, group) => `Năng lượng trước sự kiện mới của bạn là <strong>${total}</strong>, dự kiến thuộc nhóm <strong>${group}</strong>.<br>Khoảng tương ứng đã được đánh dấu trong bảng bên dưới.`,
+                groupDescNoMatch: (total) => `Tổng năng lượng hiện tại là <strong>${total}</strong>, nhưng không khớp với khoảng nào trong bảng.`,
+                footer: (year) => `Copyright © ${year} 大佬群＆Coin999-長長久久`
             }
         };
 
@@ -815,12 +1089,30 @@
         ];
 
         const inputIds = [
-            "baseEnergy", "extraEnergy", "bronzeKey", "goldKey", "bluePotion", "redPotion",
-            "bomb", "cannon", "cookie", "caveKey", "wealthHammer", "mergeLightning",
-            "cosmicCoin", "shovel", "bossCoin", "farmCoin", "avalancheCoin"
+            "baseEnergy",
+            "extraEnergy",
+            "bronzeKey",
+            "goldKey",
+            "bluePotion",
+            "redPotion",
+            "bomb",
+            "cannon",
+            "cookie",
+            "caveKey",
+            "wealthHammer",
+            "mergeLightning",
+            "cosmicCoin",
+            "shovel",
+            "bossCoin",
+            "farmCoin",
+            "avalancheCoin"
         ];
 
-        const decimalAllowedIds = ["bluePotion", "redPotion"];
+        const decimalAllowedIds = [
+            "bluePotion",
+            "redPotion"
+        ];
+
         const integerOnlyIds = inputIds.filter(id => !decimalAllowedIds.includes(id));
 
         function t(key) {
@@ -835,17 +1127,20 @@
 
             document.querySelectorAll("[data-i18n]").forEach(el => {
                 const key = el.getAttribute("data-i18n");
-                if (dictionary[key]) el.textContent = dictionary[key];
+                if (dictionary[key]) {
+                    el.textContent = dictionary[key];
+                }
             });
 
             document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
                 const key = el.getAttribute("data-i18n-placeholder");
-                if (dictionary[key]) el.setAttribute("placeholder", dictionary[key]);
+                if (dictionary[key]) {
+                    el.setAttribute("placeholder", dictionary[key]);
+                }
             });
 
             setFooterYear();
             calculateAll();
-            updatePageScale();
         }
 
         function sanitizeInputValue(value, allowDecimal = false) {
@@ -857,24 +1152,21 @@
                 .replace(/\s/g, "")
                 .toUpperCase();
 
+            text = text.replace(/[^0-9.KM萬]/g, "");
+
+            const hasK = text.includes("K");
+            const hasM = text.includes("M");
+            const hasWan = text.includes("萬");
+
+            let suffix = "";
+
+            if (hasK) suffix = "K";
+            else if (hasM) suffix = "M";
+            else if (hasWan) suffix = "萬";
+
+            text = text.replace(/[KM萬]/g, "");
+
             if (allowDecimal) {
-                text = text.replace(/[^0-9.KM]/g, "");
-
-                const firstKIndex = text.indexOf("K");
-                const firstMIndex = text.indexOf("M");
-
-                let suffix = "";
-
-                if (firstKIndex !== -1 && firstMIndex !== -1) {
-                    suffix = firstKIndex < firstMIndex ? "K" : "M";
-                } else if (firstKIndex !== -1) {
-                    suffix = "K";
-                } else if (firstMIndex !== -1) {
-                    suffix = "M";
-                }
-
-                text = text.replace(/[KM]/g, "");
-
                 const parts = text.split(".");
                 const integerPart = parts[0] || "";
                 const decimalPart = parts.length > 1 ? parts.slice(1).join("") : "";
@@ -884,17 +1176,22 @@
                 if (parts.length > 1) {
                     text += "." + decimalPart;
                 }
-
-                if (text === "." || text === "") return "";
-
-                return text + suffix;
+            } else {
+                text = text.replace(/\./g, "");
             }
 
-            return text.replace(/[^0-9]/g, "");
+            if (text === "." || text === "") {
+                return "";
+            }
+
+            return text + suffix;
         }
 
         function parseNumber(value, allowDecimal = false) {
+            if (value === null || value === undefined) return 0;
+
             let text = sanitizeInputValue(value, allowDecimal).toLowerCase();
+
             if (!text) return 0;
 
             let multiplier = 1;
@@ -905,23 +1202,38 @@
             } else if (text.endsWith("m")) {
                 multiplier = 1000000;
                 text = text.slice(0, -1);
+            } else if (text.endsWith("萬")) {
+                multiplier = 10000;
+                text = text.slice(0, -1);
             }
 
             let number = allowDecimal ? parseFloat(text) : parseInt(text, 10);
+
             if (isNaN(number)) return 0;
+
+            if (!allowDecimal) {
+                number = Math.floor(number);
+            }
 
             return number * multiplier;
         }
 
         function getInputNumber(id) {
             const input = document.getElementById(id);
-            if (!input) return 0;
 
-            return parseNumber(input.value, decimalAllowedIds.includes(id));
+            if (!input) {
+                console.error(`Input not found: ${id}`);
+                return 0;
+            }
+
+            const allowDecimal = decimalAllowedIds.includes(id);
+            return parseNumber(input.value, allowDecimal);
         }
 
         function formatNumber(num) {
-            const value = Math.floor(num || 0);
+            if (!isFinite(num)) return "∞";
+
+            const value = Math.floor(num);
 
             const localeMap = {
                 "zh-Hant": "zh-TW",
@@ -930,6 +1242,10 @@
             };
 
             return value.toLocaleString(localeMap[currentLang] || "zh-TW");
+        }
+
+        function getRoundedEnergy(value) {
+            return Math.floor(value);
         }
 
         function calculateItemEnergy() {
@@ -969,7 +1285,11 @@
                 farmCoin / 100 +
                 avalancheCoin / 20;
 
-            return magicKingdomEnergy + normalEventEnergy;
+            return {
+                magicKingdomEnergy,
+                normalEventEnergy,
+                totalItemEnergy: magicKingdomEnergy + normalEventEnergy
+            };
         }
 
         function findGroup(totalEnergy) {
@@ -991,29 +1311,34 @@
         function calculateAll() {
             const baseEnergy = getInputNumber("baseEnergy");
             const extraEnergy = getInputNumber("extraEnergy");
-            const itemEnergy = Math.floor(calculateItemEnergy());
-            const totalEnergy = Math.floor(baseEnergy + extraEnergy + itemEnergy);
+
+            const itemData = calculateItemEnergy();
+
+            const rawTotal = baseEnergy + extraEnergy + itemData.totalItemEnergy;
+            const totalEnergy = getRoundedEnergy(rawTotal);
+
             const group = findGroup(totalEnergy);
 
             document.getElementById("totalEnergyText").textContent = formatNumber(totalEnergy);
-            document.getElementById("itemEnergyText").textContent = formatNumber(itemEnergy);
-            document.getElementById("baseExtraText").textContent = formatNumber(baseEnergy + extraEnergy);
+            document.getElementById("itemEnergyText").textContent = formatNumber(getRoundedEnergy(itemData.totalItemEnergy));
+            document.getElementById("baseExtraText").textContent = formatNumber(getRoundedEnergy(baseEnergy + extraEnergy));
 
             document.getElementById("totalEnergyDetail").textContent =
                 `${t("totalLabelBase")} ${formatNumber(baseEnergy)} + ` +
                 `${t("totalLabelExtra")} ${formatNumber(extraEnergy)} + ` +
-                `${t("totalLabelItems")} ${formatNumber(itemEnergy)}`;
+                `${t("totalLabelItems")} ${formatNumber(getRoundedEnergy(itemData.totalItemEnergy))}`;
 
             if (group) {
                 document.getElementById("nextGroupText").textContent = group.rangeLabel;
-                document.getElementById("groupDesc").textContent = t("totalText")(formatNumber(totalEnergy));
+                document.getElementById("groupDesc").innerHTML =
+                    t("groupDescMatched")(formatNumber(totalEnergy), group.rangeLabel);
             } else {
                 document.getElementById("nextGroupText").textContent = t("noMatchingGroup");
-                document.getElementById("groupDesc").textContent = t("currentTotalText")(formatNumber(totalEnergy));
+                document.getElementById("groupDesc").innerHTML =
+                    t("groupDescNoMatch")(formatNumber(totalEnergy));
             }
 
             renderGroupTable(group ? group.rangeLabel : null);
-            updatePageScale();
         }
 
         function renderGroupTable(activeRangeLabel = null) {
@@ -1028,19 +1353,27 @@
                 }
 
                 tr.innerHTML = `<td>${row.rangeLabel}</td>`;
+
                 tbody.appendChild(tr);
             });
-
-            updatePageScale();
         }
 
         function bindInputSanitizer() {
             integerOnlyIds.forEach(id => {
                 const input = document.getElementById(id);
-                if (!input) return;
+
+                if (!input) {
+                    console.error(`Binding failed. Input not found: ${id}`);
+                    return;
+                }
 
                 input.addEventListener("input", () => {
-                    input.value = sanitizeInputValue(input.value, false);
+                    const cleanValue = sanitizeInputValue(input.value, false);
+
+                    if (input.value !== cleanValue) {
+                        input.value = cleanValue;
+                    }
+
                     calculateAll();
                 });
 
@@ -1052,10 +1385,19 @@
 
             decimalAllowedIds.forEach(id => {
                 const input = document.getElementById(id);
-                if (!input) return;
+
+                if (!input) {
+                    console.error(`Binding failed. Input not found: ${id}`);
+                    return;
+                }
 
                 input.addEventListener("input", () => {
-                    input.value = sanitizeInputValue(input.value, true);
+                    const cleanValue = sanitizeInputValue(input.value, true);
+
+                    if (input.value !== cleanValue) {
+                        input.value = cleanValue;
+                    }
+
                     calculateAll();
                 });
 
@@ -1073,13 +1415,13 @@
 
         function bindLanguageSwitcher() {
             const languageSelect = document.getElementById("languageSelect");
+
             languageSelect.value = currentLang;
 
             languageSelect.addEventListener("change", () => {
                 currentLang = languageSelect.value;
                 localStorage.setItem("calculatorLanguage", currentLang);
                 applyI18n();
-                updatePageScale();
             });
         }
 
@@ -1088,20 +1430,6 @@
             renderGroupTable();
             bindInputSanitizer();
             applyI18n();
-            updatePageScale();
-
-            setTimeout(updatePageScale, 100);
-            setTimeout(updatePageScale, 300);
-            setTimeout(updatePageScale, 700);
-        });
-
-        window.addEventListener("resize", () => {
-            updatePageScale();
-        });
-
-        window.addEventListener("orientationchange", () => {
-            setTimeout(updatePageScale, 300);
-            setTimeout(updatePageScale, 700);
         });
     </script>
 </body>
