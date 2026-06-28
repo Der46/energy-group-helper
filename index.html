@@ -51,32 +51,11 @@
             margin-bottom: 28px;
         }
 
-        header .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 14px;
-            border-radius: 999px;
-            background: rgba(255, 255, 255, 0.12);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            backdrop-filter: blur(10px);
-            font-size: 14px;
-            margin-bottom: 12px;
-        }
-
         h1 {
             margin: 0;
             font-size: clamp(28px, 5vw, 46px);
             letter-spacing: 1px;
             line-height: 1.2;
-        }
-
-        header p {
-            margin: 12px auto 0;
-            max-width: 720px;
-            color: #cbd5e1;
-            line-height: 1.8;
-            font-size: 15px;
         }
 
         .layout {
@@ -197,46 +176,6 @@
 
         .input-group input {
             padding-right: 48px;
-        }
-
-        .actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 24px;
-            flex-wrap: wrap;
-        }
-
-        button {
-            border: 0;
-            border-radius: 14px;
-            padding: 13px 18px;
-            font-size: 15px;
-            font-weight: 800;
-            cursor: pointer;
-            transition: 0.2s ease;
-            font-family: inherit;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: #fff;
-            flex: 1;
-            min-width: 180px;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 10px 22px rgba(37, 99, 235, 0.3);
-        }
-
-        .btn-secondary {
-            background: #f1f5f9;
-            color: #334155;
-            border: 1px solid #e2e8f0;
-        }
-
-        .btn-secondary:hover {
-            background: #e2e8f0;
         }
 
         .result-panel {
@@ -364,28 +303,6 @@
             font-weight: 900;
         }
 
-        .rate-list {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 10px;
-            margin-top: 12px;
-        }
-
-        .rate-item {
-            padding: 12px;
-            border-radius: 14px;
-            background: #fff;
-            border: 1px solid var(--border);
-            font-size: 13px;
-            line-height: 1.5;
-        }
-
-        .rate-item strong {
-            display: block;
-            color: #0f172a;
-            margin-bottom: 4px;
-        }
-
         footer {
             text-align: center;
             color: #cbd5e1;
@@ -416,8 +333,7 @@
         @media (max-width: 640px) {
 
             .grid,
-            .grid-3,
-            .rate-list {
+            .grid-3 {
                 grid-template-columns: 1fr;
             }
 
@@ -427,14 +343,6 @@
 
             .card-header {
                 padding: 16px 18px;
-            }
-
-            .actions {
-                flex-direction: column;
-            }
-
-            button {
-                width: 100%;
             }
         }
     </style>
@@ -458,17 +366,17 @@
 
                     <div class="grid">
                         <div class="field">
-                            <label for="baseEnergy">基本能量</label>
+                            <label for="baseEnergy">基本能量 <span class="hint">限整數</span></label>
                             <div class="input-group">
-                                <input id="baseEnergy" type="text" inputmode="decimal" placeholder="例如：140 或 1.2M" />
+                                <input id="baseEnergy" type="text" inputmode="numeric" />
                                 <span>能量</span>
                             </div>
                         </div>
 
                         <div class="field">
-                            <label for="extraEnergy">額外能量</label>
+                            <label for="extraEnergy">額外能量 <span class="hint">限整數</span></label>
                             <div class="input-group">
-                                <input id="extraEnergy" type="text" inputmode="decimal" placeholder="例如：1040957" />
+                                <input id="extraEnergy" type="text" inputmode="numeric" />
                                 <span>能量</span>
                             </div>
                         </div>
@@ -480,33 +388,33 @@
 
                     <div class="grid-3">
                         <div class="field">
-                            <label for="bronzeKey">🔑 銅鑰匙 <span class="hint">1 把 = 105</span></label>
-                            <input id="bronzeKey" type="text" inputmode="decimal" placeholder="0" />
+                            <label for="bronzeKey">🔑 銅鑰匙 <span class="hint">1:105</span></label>
+                            <input id="bronzeKey" type="text" inputmode="numeric" placeholder="0" />
                         </div>
 
                         <div class="field">
-                            <label for="goldKey">🔑 金鑰匙 <span class="hint">1 把 = 220</span></label>
-                            <input id="goldKey" type="text" inputmode="decimal" placeholder="0" />
+                            <label for="goldKey">🔑 金鑰匙 <span class="hint">1:220</span></label>
+                            <input id="goldKey" type="text" inputmode="numeric" placeholder="0" />
                         </div>
 
                         <div class="field">
-                            <label for="bluePotion">🧪 藍色藥水 <span class="hint">500 瓶 = 1</span></label>
+                            <label for="bluePotion">🧪 藍色藥水 <span class="hint">500:1</span></label>
                             <input id="bluePotion" type="text" inputmode="decimal" placeholder="例如：500k 或 1.2M" />
                         </div>
 
                         <div class="field">
-                            <label for="redPotion">🧪 紅色藥水 <span class="hint">50000 瓶 = 1</span></label>
-                            <input id="redPotion" type="text" inputmode="decimal" placeholder="例如：50k 或 1M" />
+                            <label for="redPotion">🧪 紅色藥水 <span class="hint">50000:1</span></label>
+                            <input id="redPotion" type="text" inputmode="decimal" placeholder="例如：500k 或 1.2M" />
                         </div>
 
                         <div class="field">
-                            <label for="bomb">💣 炸彈 <span class="hint">1 個 = 50</span></label>
-                            <input id="bomb" type="text" inputmode="decimal" placeholder="0" />
+                            <label for="bomb">💣 炸彈 <span class="hint">1:50</span></label>
+                            <input id="bomb" type="text" inputmode="numeric" placeholder="0" />
                         </div>
 
                         <div class="field">
-                            <label for="cannon">🔫 砲台 <span class="hint">1 個 = 100</span></label>
-                            <input id="cannon" type="text" inputmode="decimal" placeholder="0" />
+                            <label for="cannon">🔫 砲台 <span class="hint">1:100</span></label>
+                            <input id="cannon" type="text" inputmode="numeric" placeholder="0" />
                         </div>
                     </div>
 
@@ -516,80 +424,49 @@
 
                     <div class="grid-3">
                         <div class="field">
-                            <label for="cookie">🍪 小徑餅乾 <span class="hint">1 = 5</span></label>
-                            <input id="cookie" type="text" inputmode="decimal" placeholder="0" />
+                            <label for="cookie">🍪 小徑餅乾 <span class="hint">1:5</span></label>
+                            <input id="cookie" type="text" inputmode="numeric" placeholder="0" />
                         </div>
 
                         <div class="field">
-                            <label for="caveKey">🦴 洞穴鑰匙 <span class="hint">1 = 10</span></label>
-                            <input id="caveKey" type="text" inputmode="decimal" placeholder="0" />
+                            <label for="caveKey">🦴 洞穴鑰匙 <span class="hint">1:10</span></label>
+                            <input id="caveKey" type="text" inputmode="numeric" placeholder="0" />
                         </div>
 
                         <div class="field">
-                            <label for="wealthHammer">🔨 財富寶鎚 <span class="hint">1 = 10</span></label>
-                            <input id="wealthHammer" type="text" inputmode="decimal" placeholder="0" />
+                            <label for="wealthHammer">🔨 財富寶鎚 <span class="hint">1:10</span></label>
+                            <input id="wealthHammer" type="text" inputmode="numeric" placeholder="0" />
                         </div>
 
                         <div class="field">
-                            <label for="mergeLightning">⚡ 合併閃電 <span class="hint">1 = 10</span></label>
-                            <input id="mergeLightning" type="text" inputmode="decimal" placeholder="0" />
+                            <label for="mergeLightning">⚡ 合併閃電 <span class="hint">1:10</span></label>
+                            <input id="mergeLightning" type="text" inputmode="numeric" placeholder="0" />
                         </div>
 
                         <div class="field">
-                            <label for="wizardStaff">🪄 魔法師法杖 <span class="hint">1 = 10</span></label>
-                            <input id="wizardStaff" type="text" inputmode="decimal" placeholder="0" />
+                            <label for="wizardStaff">🪄 魔法師法杖 <span class="hint">1:10</span></label>
+                            <input id="wizardStaff" type="text" inputmode="numeric" placeholder="0" />
                         </div>
 
                         <div class="field">
-                            <label for="shovel">🪏 鏟子 <span class="hint">1 = 10</span></label>
-                            <input id="shovel" type="text" inputmode="decimal" placeholder="0" />
+                            <label for="shovel">🪏 鏟子 <span class="hint">1:10</span></label>
+                            <input id="shovel" type="text" inputmode="numeric" placeholder="0" />
                         </div>
 
                         <div class="field">
-                            <label for="bossCoin">🪙 Boss 代幣 <span class="hint">100 = 1</span></label>
-                            <input id="bossCoin" type="text" inputmode="decimal" placeholder="0" />
+                            <label for="bossCoin">🪙 Boss 代幣 <span class="hint">100:1</span></label>
+                            <input id="bossCoin" type="text" inputmode="numeric" placeholder="0" />
                         </div>
 
                         <div class="field">
-                            <label for="farmCoin">🌸 耕種花幣 <span class="hint">100 = 1</span></label>
-                            <input id="farmCoin" type="text" inputmode="decimal" placeholder="0" />
+                            <label for="farmCoin">🌸 耕種花幣 <span class="hint">100:1</span></label>
+                            <input id="farmCoin" type="text" inputmode="numeric" placeholder="0" />
                         </div>
 
                         <div class="field">
-                            <label for="avalancheCoin">❄️ 雪崩代幣 <span class="hint">20 = 1</span></label>
-                            <input id="avalancheCoin" type="text" inputmode="decimal" placeholder="0" />
+                            <label for="avalancheCoin">❄️ 雪崩代幣 <span class="hint">20:1</span></label>
+                            <input id="avalancheCoin" type="text" inputmode="numeric" placeholder="0" />
                         </div>
-                    </div>
-
-                    <div class="divider"></div>
-
-                    <h3 class="section-title">📊 分組表設定</h3>
-
-                    <div class="grid">
-                        <div class="field">
-                            <label for="groupType">選擇活動分組類型</label>
-                            <select id="groupType">
-                                <option value="symbol1210">符號1210</option>
-                                <option value="type1210Plus3">1210+3</option>
-                                <option value="pig145">豬豬145</option>
-                                <option value="hammerNoCount">符槌槌不計</option>
-                            </select>
-                        </div>
-
-                        <div class="field">
-                            <label for="roundMode">能量小數處理</label>
-                            <select id="roundMode">
-                                <option value="floor">無條件捨去</option>
-                                <option value="round">四捨五入</option>
-                                <option value="ceil">無條件進位</option>
-                                <option value="decimal">保留小數</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="actions">
-                        <button class="btn-primary" onclick="calculateAll()">立即換算</button>
-                        <button class="btn-secondary" onclick="resetAll()">清空重填</button>
                     </div>
                 </div>
             </section>
@@ -597,7 +474,7 @@
             <aside class="card result-panel">
                 <div class="card-header">
                     <h2>📣 換算結果</h2>
-                    <p>結果會即時計算，方便對照下一週分組。</p>
+                    <p>結果計算對照下一週分組。</p>
                 </div>
 
                 <div class="card-body">
@@ -611,14 +488,10 @@
                         <h3>下一週預估分組</h3>
                         <div class="group-name" id="nextGroupText">尚未計算</div>
                         <div id="groupDesc" class="notice">
-                            請輸入能量或道具數量後，系統會依照目前選擇的分組表判斷。
+                            請輸入能量或道具數量後，系統會依照總能量判斷所在分組。
                         </div>
 
                         <div class="small-list">
-                            <div class="small-row">
-                                <span>目前分組表</span>
-                                <strong id="currentTableText">符號1210</strong>
-                            </div>
                             <div class="small-row">
                                 <span>道具換算能量</span>
                                 <strong id="itemEnergyText">0</strong>
@@ -629,28 +502,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="group-box">
-                        <h3>換算規則速查</h3>
-                        <div class="rate-list">
-                            <div class="rate-item">
-                                <strong>魔法王國</strong>
-                                銅鑰匙 105、金鑰匙 220、藍藥水 500:1、紅藥水 50000:1、炸彈 50、砲台 100
-                            </div>
-                            <div class="rate-item">
-                                <strong>一般活動</strong>
-                                餅乾 5、洞穴鑰匙 10、寶鎚 10、閃電 10、法杖 10、鏟子 10
-                            </div>
-                            <div class="rate-item">
-                                <strong>代幣類</strong>
-                                Boss 代幣 100:1、耕種花幣 100:1、雪崩代幣 20:1
-                            </div>
-                            <div class="rate-item">
-                                <strong>K / M 輸入</strong>
-                                500K = 500,000；1.2M = 1,200,000
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </aside>
         </main>
@@ -658,7 +509,7 @@
         <section class="card" style="margin-top:22px;">
             <div class="card-header">
                 <h2>🗂️ 分組內容對照表</h2>
-                <p>依照上傳圖片內容整理。表格會標示目前總能量所在列。</p>
+                <p>表格會標示目前總能量所在列。</p>
             </div>
 
             <div class="card-body">
@@ -784,7 +635,7 @@
                 hammerNoCount: "3M-1"
             },
             {
-                rangeLabel: "1000K 以上",
+                rangeLabel: "1M 以上",
                 min: 1000000,
                 max: Infinity,
                 symbol1210: "4.8M-2",
@@ -793,13 +644,6 @@
                 hammerNoCount: "3M-2"
             }
         ];
-
-        const groupTypeNames = {
-            symbol1210: "符號1210",
-            type1210Plus3: "1210+3",
-            pig145: "豬豬145",
-            hammerNoCount: "符槌槌不計"
-        };
 
         const inputIds = [
             "baseEnergy",
@@ -821,15 +665,61 @@
             "avalancheCoin"
         ];
 
-        function parseNumber(value) {
-            if (value === null || value === undefined) return 0;
+        const decimalAllowedIds = [
+            "bluePotion",
+            "redPotion"
+        ];
+
+        const integerOnlyIds = inputIds.filter(id => !decimalAllowedIds.includes(id));
+
+        function sanitizeInputValue(value, allowDecimal = false) {
+            if (value === null || value === undefined) return "";
 
             let text = String(value)
-                .trim()
                 .replace(/,/g, "")
                 .replace(/，/g, "")
                 .replace(/\s/g, "")
-                .toLowerCase();
+                .toUpperCase();
+
+            text = text.replace(/[^0-9.KM萬]/g, "");
+
+            const hasK = text.includes("K");
+            const hasM = text.includes("M");
+            const hasWan = text.includes("萬");
+
+            let suffix = "";
+
+            if (hasK) suffix = "K";
+            else if (hasM) suffix = "M";
+            else if (hasWan) suffix = "萬";
+
+            text = text.replace(/[KM萬]/g, "");
+
+            if (allowDecimal) {
+                const parts = text.split(".");
+                const integerPart = parts[0] || "";
+                const decimalPart = parts.length > 1 ? parts.slice(1).join("") : "";
+
+                text = integerPart;
+
+                if (parts.length > 1) {
+                    text += "." + decimalPart;
+                }
+            } else {
+                text = text.replace(/\./g, "");
+            }
+
+            if (text === "." || text === "") {
+                return "";
+            }
+
+            return text + suffix;
+        }
+
+        function parseNumber(value, allowDecimal = false) {
+            if (value === null || value === undefined) return 0;
+
+            let text = sanitizeInputValue(value, allowDecimal).toLowerCase();
 
             if (!text) return 0;
 
@@ -846,62 +736,51 @@
                 text = text.slice(0, -1);
             }
 
-            const number = parseFloat(text);
+            let number = allowDecimal ? parseFloat(text) : parseInt(text, 10);
 
             if (isNaN(number)) return 0;
+
+            if (!allowDecimal) {
+                number = Math.floor(number);
+            }
 
             return number * multiplier;
         }
 
-        function formatNumber(num, allowDecimal = false) {
+        function getInputNumber(id) {
+            const allowDecimal = decimalAllowedIds.includes(id);
+            return parseNumber(document.getElementById(id).value, allowDecimal);
+        }
+
+        function formatNumber(num) {
             if (!isFinite(num)) return "∞";
 
-            let value = allowDecimal ? Number(num.toFixed(2)) : Math.round(num);
+            const value = Math.floor(num);
 
             return value.toLocaleString("zh-TW");
         }
 
-        function formatShort(num) {
-            if (!isFinite(num)) return "∞";
-
-            if (num >= 1000000) {
-                return `${Number((num / 1000000).toFixed(2))}M`;
-            }
-
-            if (num >= 1000) {
-                return `${Number((num / 1000).toFixed(2))}K`;
-            }
-
-            return String(Number(num.toFixed(2)));
-        }
-
         function getRoundedEnergy(value) {
-            const mode = document.getElementById("roundMode").value;
-
-            if (mode === "floor") return Math.floor(value);
-            if (mode === "ceil") return Math.ceil(value);
-            if (mode === "round") return Math.round(value);
-
-            return Number(value.toFixed(2));
+            return Math.floor(value);
         }
 
         function calculateItemEnergy() {
-            const bronzeKey = parseNumber(document.getElementById("bronzeKey").value);
-            const goldKey = parseNumber(document.getElementById("goldKey").value);
-            const bluePotion = parseNumber(document.getElementById("bluePotion").value);
-            const redPotion = parseNumber(document.getElementById("redPotion").value);
-            const bomb = parseNumber(document.getElementById("bomb").value);
-            const cannon = parseNumber(document.getElementById("cannon").value);
+            const bronzeKey = getInputNumber("bronzeKey");
+            const goldKey = getInputNumber("goldKey");
+            const bluePotion = getInputNumber("bluePotion");
+            const redPotion = getInputNumber("redPotion");
+            const bomb = getInputNumber("bomb");
+            const cannon = getInputNumber("cannon");
 
-            const cookie = parseNumber(document.getElementById("cookie").value);
-            const caveKey = parseNumber(document.getElementById("caveKey").value);
-            const wealthHammer = parseNumber(document.getElementById("wealthHammer").value);
-            const mergeLightning = parseNumber(document.getElementById("mergeLightning").value);
-            const wizardStaff = parseNumber(document.getElementById("wizardStaff").value);
-            const shovel = parseNumber(document.getElementById("shovel").value);
-            const bossCoin = parseNumber(document.getElementById("bossCoin").value);
-            const farmCoin = parseNumber(document.getElementById("farmCoin").value);
-            const avalancheCoin = parseNumber(document.getElementById("avalancheCoin").value);
+            const cookie = getInputNumber("cookie");
+            const caveKey = getInputNumber("caveKey");
+            const wealthHammer = getInputNumber("wealthHammer");
+            const mergeLightning = getInputNumber("mergeLightning");
+            const wizardStaff = getInputNumber("wizardStaff");
+            const shovel = getInputNumber("shovel");
+            const bossCoin = getInputNumber("bossCoin");
+            const farmCoin = getInputNumber("farmCoin");
+            const avalancheCoin = getInputNumber("avalancheCoin");
 
             const magicKingdomEnergy =
                 bronzeKey * 105 +
@@ -939,16 +818,15 @@
             }
 
             if (totalEnergy > 999000) {
-                return groupRows.find(row => row.rangeLabel === "1000K 以上");
+                return groupRows.find(row => row.rangeLabel === "1M 以上");
             }
 
             return null;
         }
 
         function calculateAll() {
-            const baseEnergy = parseNumber(document.getElementById("baseEnergy").value);
-            const extraEnergy = parseNumber(document.getElementById("extraEnergy").value);
-            const groupType = document.getElementById("groupType").value;
+            const baseEnergy = getInputNumber("baseEnergy");
+            const extraEnergy = getInputNumber("extraEnergy");
 
             const itemData = calculateItemEnergy();
 
@@ -957,29 +835,23 @@
 
             const group = findGroup(totalEnergy);
 
-            const allowDecimal = document.getElementById("roundMode").value === "decimal";
-
-            document.getElementById("totalEnergyText").textContent = formatNumber(totalEnergy, allowDecimal);
-            document.getElementById("itemEnergyText").textContent = formatNumber(getRoundedEnergy(itemData.totalItemEnergy), allowDecimal);
-            document.getElementById("baseExtraText").textContent = formatNumber(getRoundedEnergy(baseEnergy + extraEnergy), allowDecimal);
-            document.getElementById("currentTableText").textContent = groupTypeNames[groupType];
+            document.getElementById("totalEnergyText").textContent = formatNumber(totalEnergy);
+            document.getElementById("itemEnergyText").textContent = formatNumber(getRoundedEnergy(itemData.totalItemEnergy));
+            document.getElementById("baseExtraText").textContent = formatNumber(getRoundedEnergy(baseEnergy + extraEnergy));
 
             document.getElementById("totalEnergyDetail").textContent =
-                `基本 ${formatNumber(baseEnergy)} + 額外 ${formatNumber(extraEnergy)} + 道具 ${formatNumber(getRoundedEnergy(itemData.totalItemEnergy), allowDecimal)}`;
+                `基本 ${formatNumber(baseEnergy)} + 額外 ${formatNumber(extraEnergy)} + 道具 ${formatNumber(getRoundedEnergy(itemData.totalItemEnergy))}`;
 
             if (group) {
-                const targetValue = group[groupType];
-
                 document.getElementById("nextGroupText").textContent = group.rangeLabel;
                 document.getElementById("groupDesc").innerHTML =
-                    `依照目前選擇的 <strong>${groupTypeNames[groupType]}</strong> 分組表，` +
-                    `你的新活動前所剩能量為 <strong>${formatNumber(totalEnergy, allowDecimal)}</strong>，` +
+                    `你的新活動前所剩能量為 <strong>${formatNumber(totalEnergy)}</strong>，` +
                     `預估會落在 <strong>${group.rangeLabel}</strong> 這一組。<br>` +
-                    `該組參考能量需求為：<strong>${targetValue}</strong>。`;
+                    `下方表格已標示目前所在區間，可直接對照各活動組別需求。`;
             } else {
                 document.getElementById("nextGroupText").textContent = "未落入表格區間";
                 document.getElementById("groupDesc").innerHTML =
-                    `目前總能量為 <strong>${formatNumber(totalEnergy, allowDecimal)}</strong>，沒有對應到表格中的明確區間。`;
+                    `目前總能量為 <strong>${formatNumber(totalEnergy)}</strong>，沒有對應到表格中的明確區間。`;
             }
 
             renderGroupTable(group ? group.rangeLabel : null);
@@ -997,65 +869,68 @@
                 }
 
                 tr.innerHTML = `
-          <td>${row.rangeLabel}</td>
-          <td>${row.symbol1210}</td>
-          <td>${row.type1210Plus3}</td>
-          <td>${row.pig145}</td>
-          <td>${row.hammerNoCount}</td>
-        `;
+                    <td>${row.rangeLabel}</td>
+                    <td>${row.symbol1210}</td>
+                    <td>${row.type1210Plus3}</td>
+                    <td>${row.pig145}</td>
+                    <td>${row.hammerNoCount}</td>
+                `;
 
                 tbody.appendChild(tr);
             });
         }
 
-        function resetAll() {
-            inputIds.forEach(id => {
-                document.getElementById(id).value = "";
+        function bindInputSanitizer() {
+            integerOnlyIds.forEach(id => {
+                const input = document.getElementById(id);
+
+                input.addEventListener("input", () => {
+                    const cleanValue = sanitizeInputValue(input.value, false);
+
+                    if (input.value !== cleanValue) {
+                        input.value = cleanValue;
+                    }
+
+                    calculateAll();
+                });
+
+                input.addEventListener("blur", () => {
+                    input.value = sanitizeInputValue(input.value, false);
+                    calculateAll();
+                });
             });
 
-            document.getElementById("groupType").value = "symbol1210";
-            document.getElementById("roundMode").value = "floor";
+            decimalAllowedIds.forEach(id => {
+                const input = document.getElementById(id);
 
-            document.getElementById("totalEnergyText").textContent = "0";
-            document.getElementById("totalEnergyDetail").textContent = "基準能量 + 額外能量 + 道具換算能量";
-            document.getElementById("nextGroupText").textContent = "尚未計算";
-            document.getElementById("groupDesc").innerHTML = "請輸入能量或道具數量後，系統會依照目前選擇的分組表判斷。";
-            document.getElementById("currentTableText").textContent = "符號1210";
-            document.getElementById("itemEnergyText").textContent = "0";
-            document.getElementById("baseExtraText").textContent = "0";
+                input.addEventListener("input", () => {
+                    const cleanValue = sanitizeInputValue(input.value, true);
 
-            renderGroupTable();
-        }
+                    if (input.value !== cleanValue) {
+                        input.value = cleanValue;
+                    }
 
-        function bindAutoCalculate() {
-            inputIds.forEach(id => {
-                document.getElementById(id).addEventListener("input", calculateAll);
+                    calculateAll();
+                });
+
+                input.addEventListener("blur", () => {
+                    input.value = sanitizeInputValue(input.value, true);
+                    calculateAll();
+                });
             });
-
-            document.getElementById("groupType").addEventListener("change", calculateAll);
-            document.getElementById("roundMode").addEventListener("change", calculateAll);
         }
 
         function setFooterYear() {
             const year = new Date().getFullYear();
             document.getElementById("footerText").textContent =
-                `Copyright © ${year} 大佬群＆coin999-長長久久`;
+                `Copyright © ${year} 大佬群＆Coin999-長長久久`;
         }
 
         document.addEventListener("DOMContentLoaded", () => {
             renderGroupTable();
-            bindAutoCalculate();
+            bindInputSanitizer();
             setFooterYear();
-
-            /*
-              若想用圖片範例預填：
-              基本能量 140
-              額外能量 1040957
-              可取消下面兩行註解。
-            */
-            // document.getElementById("baseEnergy").value = "140";
-            // document.getElementById("extraEnergy").value = "1040957";
-            // calculateAll();
+            calculateAll();
         });
     </script>
 </body>
