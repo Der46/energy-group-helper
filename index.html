@@ -334,6 +334,10 @@
             line-height: 1.7;
         }
 
+        .mobile-result-summary {
+            display: none;
+        }
+
         .table-wrap {
             overflow-x: auto;
             margin-top: 14px;
@@ -426,6 +430,71 @@
             .result-panel {
                 position: static;
                 order: -1;
+            }
+
+            .result-panel .card-header {
+                display: none;
+            }
+
+            .result-panel .card-body {
+                padding: 0;
+                background: transparent;
+            }
+
+            .result-panel {
+                background: transparent;
+                box-shadow: none;
+                border: 0;
+                overflow: visible;
+            }
+
+            .desktop-result-content {
+                display: none;
+            }
+
+            .mobile-result-summary {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 10px;
+            }
+
+            .mobile-result-box {
+                border-radius: 15px;
+                padding: 14px 10px;
+                text-align: center;
+                background: rgba(255, 255, 255, 0.96);
+                border: 1px solid rgba(255, 255, 255, 0.65);
+                box-shadow: 0 10px 25px rgba(15, 23, 42, 0.16);
+                min-width: 0;
+            }
+
+            .mobile-result-box.primary {
+                background: linear-gradient(135deg, #1d4ed8, #7c3aed);
+                color: #fff;
+            }
+
+            .mobile-result-label {
+                font-size: 12px;
+                font-weight: 800;
+                color: var(--text-muted);
+                margin-bottom: 6px;
+                white-space: nowrap;
+            }
+
+            .mobile-result-box.primary .mobile-result-label {
+                color: #dbeafe;
+            }
+
+            .mobile-result-value {
+                font-size: 22px;
+                line-height: 1.15;
+                font-weight: 900;
+                color: #0f172a;
+                word-break: break-word;
+            }
+
+            .mobile-result-box.primary .mobile-result-value {
+                color: #fff;
             }
 
             .input-card {
@@ -627,6 +696,22 @@
             td {
                 padding: 10px 8px;
             }
+
+            .mobile-result-summary {
+                gap: 8px;
+            }
+
+            .mobile-result-box {
+                padding: 12px 8px;
+            }
+
+            .mobile-result-label {
+                font-size: 11.5px;
+            }
+
+            .mobile-result-value {
+                font-size: 20px;
+            }
         }
 
         @media (max-width: 380px) {
@@ -662,6 +747,14 @@
 
             .small-row {
                 font-size: 11.5px;
+            }
+
+            .mobile-result-value {
+                font-size: 18px;
+            }
+
+            .mobile-result-label {
+                font-size: 11px;
             }
         }
     </style>
@@ -869,32 +962,49 @@
                 </div>
 
                 <div class="card-body">
-                    <div class="total-box">
-                        <div class="label" data-i18n="playerTotalEnergy">玩家總能量</div>
-                        <div class="value" id="totalEnergyText">0</div>
-                        <div class="sub" id="totalEnergyDetail">基準能量 + 額外能量 + 道具換算能量</div>
-                    </div>
-
-                    <div class="group-box">
-                        <h3 data-i18n="nextGroupTitle">下一週預估分組</h3>
-                        <div class="group-name" id="nextGroupText">尚未計算</div>
-                        <div id="groupDesc" class="notice">
-                            請輸入能量或道具數量後，系統會依照總能量判斷所在分組。
+                    <!-- 手機版：兩格橫排結果 -->
+                    <div class="mobile-result-summary">
+                        <div class="mobile-result-box primary">
+                            <div class="mobile-result-label" data-i18n="playerTotalEnergy">玩家總能量</div>
+                            <div class="mobile-result-value" id="mobileTotalEnergyText">0</div>
                         </div>
 
-                        <div class="small-list">
-                            <div class="small-row">
-                                <span data-i18n="itemConvertedEnergy">道具換算能量</span>
-                                <strong id="itemEnergyText">0</strong>
+                        <div class="mobile-result-box">
+                            <div class="mobile-result-label" data-i18n="nextGroupTitle">下一週預估分組</div>
+                            <div class="mobile-result-value" id="mobileNextGroupText">尚未計算</div>
+                        </div>
+                    </div>
+
+                    <!-- 桌機版：原本完整結果卡片 -->
+                    <div class="desktop-result-content">
+                        <div class="total-box">
+                            <div class="label" data-i18n="playerTotalEnergy">玩家總能量</div>
+                            <div class="value" id="totalEnergyText">0</div>
+                            <div class="sub" id="totalEnergyDetail">基準能量 + 額外能量 + 道具換算能量</div>
+                        </div>
+
+                        <div class="group-box">
+                            <h3 data-i18n="nextGroupTitle">下一週預估分組</h3>
+                            <div class="group-name" id="nextGroupText">尚未計算</div>
+                            <div id="groupDesc" class="notice">
+                                請輸入能量或道具數量後，系統會依照總能量判斷所在分組。
                             </div>
-                            <div class="small-row">
-                                <span data-i18n="basePlusExtraEnergy">基本 + 額外能量</span>
-                                <strong id="baseExtraText">0</strong>
+
+                            <div class="small-list">
+                                <div class="small-row">
+                                    <span data-i18n="itemConvertedEnergy">道具換算能量</span>
+                                    <strong id="itemEnergyText">0</strong>
+                                </div>
+                                <div class="small-row">
+                                    <span data-i18n="basePlusExtraEnergy">基本 + 額外能量</span>
+                                    <strong id="baseExtraText">0</strong>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </aside>
+
         </main>
 
         <section class="card" style="margin-top:22px;">
@@ -1320,6 +1430,8 @@
             const group = findGroup(totalEnergy);
 
             document.getElementById("totalEnergyText").textContent = formatNumber(totalEnergy);
+            document.getElementById("mobileTotalEnergyText").textContent = formatNumber(totalEnergy);
+
             document.getElementById("itemEnergyText").textContent = formatNumber(getRoundedEnergy(itemData.totalItemEnergy));
             document.getElementById("baseExtraText").textContent = formatNumber(getRoundedEnergy(baseEnergy + extraEnergy));
 
@@ -1330,10 +1442,14 @@
 
             if (group) {
                 document.getElementById("nextGroupText").textContent = group.rangeLabel;
+                document.getElementById("mobileNextGroupText").textContent = group.rangeLabel;
+
                 document.getElementById("groupDesc").innerHTML =
                     t("groupDescMatched")(formatNumber(totalEnergy), group.rangeLabel);
             } else {
                 document.getElementById("nextGroupText").textContent = t("noMatchingGroup");
+                document.getElementById("mobileNextGroupText").textContent = t("noMatchingGroup");
+
                 document.getElementById("groupDesc").innerHTML =
                     t("groupDescNoMatch")(formatNumber(totalEnergy));
             }
