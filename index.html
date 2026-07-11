@@ -1187,7 +1187,6 @@
         let currentLang = localStorage.getItem("calculatorLanguage") || "zh-Hant";
 
         const groupRows = [
-            { rangeLabel: "VIP", min: Infinity, max: Infinity },
             { rangeLabel: "0 - 900", min: 0, max: 900 },
             { rangeLabel: "901 - 4.9K", min: 901, max: 4900 },
             { rangeLabel: "5K - 9.9K", min: 5000, max: 9900 },
@@ -1409,8 +1408,6 @@
 
         function findGroup(totalEnergy) {
             for (const row of groupRows) {
-                if (row.rangeLabel === "VIP") continue;
-
                 if (totalEnergy >= row.min && totalEnergy <= row.max) {
                     return row;
                 }
