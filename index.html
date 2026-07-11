@@ -789,7 +789,7 @@
                         <div class="field">
                             <label for="bronzeKey">
                                 <img class="item-icon" src="images/bronze-key.png" alt="Bronze Key">
-                                <span data-i18n="bronzeKey">銅鑰匙</span> <span class="hint">1:105</span>
+                                <span data-i18n="bronzeKey">銅鑰匙</span> <span class="hint">1:100</span>
                             </label>
                             <input id="bronzeKey" type="text" inputmode="numeric" placeholder="0" />
                         </div>
@@ -797,7 +797,7 @@
                         <div class="field">
                             <label for="goldKey">
                                 <img class="item-icon" src="images/gold-key.png" alt="Gold Key">
-                                <span data-i18n="goldKey">金鑰匙</span> <span class="hint">1:220</span>
+                                <span data-i18n="goldKey">金鑰匙</span> <span class="hint">1:250</span>
                             </label>
                             <input id="goldKey" type="text" inputmode="numeric" placeholder="0" />
                         </div>
@@ -805,7 +805,7 @@
                         <div class="field">
                             <label for="bluePotion">
                                 <img class="item-icon" src="images/blue-potion.png" alt="Blue Potion">
-                                <span data-i18n="bluePotion">藍色藥水</span> <span class="hint">500:1</span>
+                                <span data-i18n="bluePotion">藍色藥水</span> <span class="hint">2000:1</span>
                             </label>
                             <input id="bluePotion" type="text" inputmode="text" lang="en" autocomplete="off"
                                 autocorrect="off" autocapitalize="characters" spellcheck="false" pattern="[0-9kKmM.]*"
@@ -838,6 +838,7 @@
                             <input id="cannon" type="text" inputmode="numeric" placeholder="0" />
                         </div>
                     </div>
+
 
                     <div class="divider"></div>
 
@@ -1381,9 +1382,9 @@
             const avalancheCoin = getInputNumber("avalancheCoin");
 
             const magicKingdomEnergy =
-                bronzeKey * 105 +
-                goldKey * 220 +
-                bluePotion / 500 +
+                bronzeKey * 100 +
+                goldKey * 250 +
+                bluePotion / 2000 +
                 redPotion / 50000 +
                 bomb * 50 +
                 cannon * 100;
