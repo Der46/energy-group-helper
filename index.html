@@ -10,39 +10,96 @@
     <link rel="icon" type="image/png" sizes="192x192" href="images/icon-192.png" />
     <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
     <link rel="manifest" href="manifest.webmanifest" />
-    <meta name="theme-color" content="#0f172a" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&display=swap" />
+    <meta name="theme-color" content="#e6eff7" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0b1228" media="(prefers-color-scheme: dark)" />
     <meta name="apple-mobile-web-app-title" content="能量換算器" />
 
     <style>
+        /*
+         * Design tokens（light / dark）— 取材自遊戲裡的「能量膠囊」：藍色玻璃、咖啡色蓋子、金幣
+         * 顏色只代表一種意思：
+         *   --gold      = 你的結果（預估分組、所在組、主要動作）
+         *   --capsule   = 你累積的能量（分組量表裡的液面）
+         *   --c-base / --c-magic / --c-normal = 三種能量來源
+         * 深藍 --night 只用在結果面板與手機底部結果列：整頁唯一的重色區塊。
+         */
         :root {
-            color-scheme: light;
+            color-scheme: light dark;
 
-            --bg: #eef1f6;
-            --surface: #ffffff;
-            --surface-2: #f7f8fb;
-            --ink: #0f172a;
-            --ink-2: #334155;
-            --muted: #5b6474;
-            --line: #e1e6ee;
-            --line-strong: #cbd3df;
+            --sky: #e6eff7;            /* page */
+            --paper: #ffffff;          /* input sheet */
+            --paper-2: #eef4fa;        /* item tiles */
+            --ink: #14213d;            /* 16.0:1 on paper */
+            --ink-2: #34425e;
+            --muted: #56637a;          /* 6.1:1 on paper, 5.5:1 on paper-2 */
+            --placeholder: #5f6c84;
+            --line: #d8e2ed;
+            --line-strong: #bccadb;
 
-            --navy: #0f172a;
-            --navy-2: #1e293b;
+            --night: #17245a;          /* result panel */
+            --night-2: #22306a;
+            --night-line: rgba(255, 255, 255, 0.12);
+            --on-night: #ffffff;       /* 14.6:1 on night */
+            --on-night-muted: #c3cde6; /* 9.2:1 on night */
 
-            --energy: #f59e0b;
-            --energy-ink: #8a4b06;
-            --energy-soft: #fff5e0;
+            --gold: #f6b51e;           /* 8.0:1 on night */
+            --gold-ink: #7a4f00;       /* 6.4:1 on gold-soft */
+            --gold-soft: #fff1cc;
+            --capsule: #38c8f0;        /* 7.4:1 on night */
+            --capsule-deep: #0e7fae;
 
             --c-base: #2563eb;
-            --c-magic: #f59e0b;
+            --c-base-ink: #1d4ed8;
+            --c-magic: #7c3aed;
+            --c-magic-ink: #6d28d9;
             --c-normal: #0d9488;
+            --c-normal-ink: #0f766e;
 
             --focus: #2563eb;
-            --radius: 14px;
-            --radius-sm: 10px;
-            --shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 6px 20px rgba(15, 23, 42, 0.06);
 
-            --font: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+            --r-sheet: 22px;
+            --r-tile: 14px;
+            --r-pill: 999px;
+            --shadow-sheet: 0 1px 0 rgba(20, 33, 61, 0.04), 0 12px 32px -12px rgba(23, 36, 90, 0.18);
+
+            --font: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Thai", "Leelawadee UI", Arial, sans-serif;
+            --font-display: "Baloo 2", var(--font);
+
+            --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --sky: #0b1228;
+                --paper: #151e3b;
+                --paper-2: #1c2749;
+                --ink: #eaf0fb;        /* 14.3:1 on paper */
+                --ink-2: #c8d2e6;
+                --muted: #a2aec6;      /* 7.3:1 on paper */
+                --placeholder: #8794b0;
+                --line: #2a3760;
+                --line-strong: #3a4878;
+
+                --night: #1b2a66;
+                --night-2: #26377d;
+
+                --gold: #fbbf24;
+                --gold-ink: #fcd34d;
+                --gold-soft: #3a2e12;
+
+                --c-base: #60a5fa;
+                --c-base-ink: #93c5fd;
+                --c-magic: #a78bfa;
+                --c-magic-ink: #c4b5fd;
+                --c-normal: #2dd4bf;
+                --c-normal-ink: #5eead4;
+
+                --focus: #60a5fa;
+                --shadow-sheet: 0 1px 0 rgba(0, 0, 0, 0.3), 0 16px 40px -16px rgba(0, 0, 0, 0.6);
+            }
         }
 
         * {
@@ -53,10 +110,20 @@
             -webkit-text-size-adjust: 100%;
         }
 
+        /* iOS / iPadOS：跟隨系統「文字大小」設定。所有字級用 rem */
+        @supports (font: -apple-system-body) {
+            @media (hover: none) and (pointer: coarse) {
+                html {
+                    font: -apple-system-body;
+                }
+            }
+        }
+
         body {
             margin: 0;
             font-family: var(--font);
-            background: var(--bg);
+            font-size: 1rem;
+            background: var(--sky);
             color: var(--ink);
             line-height: 1.5;
             min-height: 100vh;
@@ -75,11 +142,10 @@
             outline-offset: 2px;
         }
 
-        /* ---------- Header ---------- */
+        /* ---------- Header：融入頁面，不再是深色橫幅 ---------- */
         .topbar {
-            background: var(--navy);
-            color: #fff;
-            padding: 20px 16px 22px;
+            padding: 22px 16px 6px;
+            padding-top: max(22px, env(safe-area-inset-top));
         }
 
         .topbar-inner {
@@ -99,43 +165,41 @@
         }
 
         .brand img {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
             flex: 0 0 auto;
-        }
-
-        .brand h1 {
-            margin: 0;
-            font-size: clamp(20px, 2.6vw, 28px);
-            line-height: 1.25;
-            letter-spacing: 0.3px;
+            box-shadow: 0 6px 16px -6px rgba(23, 36, 90, 0.45);
         }
 
         .title-row {
             display: flex;
             flex-wrap: wrap;
-            align-items: center;
-            gap: 4px 10px;
+            align-items: baseline;
+            gap: 2px 10px;
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: clamp(1.375rem, 2.8vw, 1.875rem);
+            line-height: 1.2;
+            font-weight: 800;
+            letter-spacing: 0.2px;
+            color: var(--ink);
         }
 
         .byline {
-            flex: 0 0 auto;
-            font-size: 12px;
-            font-weight: 600;
-            line-height: 1;
-            padding: 5px 9px;
-            border-radius: 999px;
-            color: var(--energy);
-            border: 1px solid rgba(245, 158, 11, 0.45);
-            background: rgba(245, 158, 11, 0.1);
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--muted);
             white-space: nowrap;
         }
 
         .brand p {
             margin: 4px 0 0;
-            color: #cbd5e1;
-            font-size: 14px;
+            color: var(--ink-2);
+            font-size: 0.9375rem;
+            max-width: 46em;
         }
 
         .lang {
@@ -145,90 +209,117 @@
         }
 
         .lang label {
-            font-size: 13px;
-            color: #cbd5e1;
+            font-size: 0.8125rem;
+            color: var(--muted);
             white-space: nowrap;
         }
 
         .lang select {
             font: inherit;
-            font-size: 14px;
-            min-height: 40px;
-            padding: 6px 30px 6px 12px;
-            border-radius: 999px;
-            border: 1px solid rgba(255, 255, 255, 0.28);
-            background: var(--navy-2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23cbd5e1' stroke-width='2' fill='none'/%3E%3C/svg%3E") no-repeat right 12px center;
-            color: #fff;
+            font-size: 0.875rem;
+            min-height: 44px;
+            padding: 6px 34px 6px 16px;
+            border-radius: var(--r-pill);
+            border: 1px solid var(--line-strong);
+            background: var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2356637a' stroke-width='2' fill='none'/%3E%3C/svg%3E") no-repeat right 14px center;
+            color: var(--ink);
             appearance: none;
             -webkit-appearance: none;
             cursor: pointer;
+            transition: border-color 0.15s ease;
         }
 
+        .lang select:hover {
+            border-color: var(--muted);
+        }
+
+        /* 步驟：真正的順序，可點擊跳到該區 */
         .steps {
             grid-column: 1 / -1;
             list-style: none;
-            margin: 4px 0 0;
+            margin: 6px 0 0;
             padding: 0;
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
         }
 
-        .steps li {
+        .steps a {
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 6px 12px 6px 6px;
-            border-radius: 999px;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.14);
-            font-size: 13.5px;
-            color: #e2e8f0;
+            min-height: 40px;
+            height: 100%;
+            padding: 6px 14px 6px 6px;
+            border-radius: var(--r-pill);
+            background: var(--paper);
+            border: 1px solid var(--line);
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--ink-2);
+            text-decoration: none;
+            transition: border-color 0.15s ease, background-color 0.15s ease;
         }
 
-        .steps li b {
+        .steps a:hover {
+            border-color: var(--line-strong);
+        }
+
+        .steps a:active {
+            background: var(--paper-2);
+        }
+
+        .steps b {
             display: grid;
             place-items: center;
-            width: 22px;
-            height: 22px;
+            flex: 0 0 auto;
+            width: max(26px, 1.9em);
+            height: max(26px, 1.9em);
             border-radius: 50%;
-            background: #fff;
-            color: var(--navy);
-            font-size: 12px;
+            background: var(--ink);
+            color: var(--paper);
+            font-family: var(--font-display);
+            font-size: 0.875rem;
+            line-height: 1;
         }
 
         .steps li:last-child b {
-            background: var(--energy);
-            color: var(--navy);
+            background: var(--gold);
+            color: #14213d;
         }
 
         /* ---------- Layout ---------- */
         .page {
             max-width: 1180px;
             margin: 0 auto;
-            padding: 20px 16px 32px;
+            padding: 16px 16px 32px;
+            padding-left: max(16px, env(safe-area-inset-left));
+            padding-right: max(16px, env(safe-area-inset-right));
         }
 
         .layout {
             display: grid;
             grid-template-columns: minmax(0, 1fr) 380px;
-            gap: 20px;
+            gap: 24px;
             align-items: start;
         }
 
+        /* 輸入：一張紙，三個段落以分隔線區隔（不是三張一樣的卡片） */
         .inputs {
-            display: grid;
-            gap: 16px;
             min-width: 0;
+            background: var(--paper);
+            border-radius: var(--r-sheet);
+            box-shadow: var(--shadow-sheet);
+            overflow: hidden;
         }
 
         .panel {
-            background: var(--surface);
-            border: 1px solid var(--line);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            padding: 18px 20px 20px;
+            padding: 22px 24px 24px;
             scroll-margin-top: 16px;
+        }
+
+        .panel + .panel {
+            border-top: 1px solid var(--line);
         }
 
         .panel-head {
@@ -241,19 +332,22 @@
         .step-no {
             display: grid;
             place-items: center;
-            width: 28px;
-            height: 28px;
+            width: max(30px, 2.1em);
+            height: max(30px, 2.1em);
             border-radius: 50%;
-            background: var(--navy);
-            color: #fff;
+            background: var(--ink);
+            color: var(--paper);
+            font-family: var(--font-display);
             font-weight: 800;
-            font-size: 14px;
+            font-size: 0.9375rem;
+            line-height: 1;
             flex: 0 0 auto;
         }
 
         .panel-head h2 {
             margin: 0;
-            font-size: 18px;
+            font-size: 1.1875rem;
+            font-weight: 800;
             line-height: 1.3;
             flex: 1 1 auto;
             min-width: 0;
@@ -261,41 +355,62 @@
 
         .subtotal {
             flex: 0 0 auto;
-            font-size: 13px;
+            display: inline-flex;
+            align-items: baseline;
+            gap: 6px;
+            font-size: 0.8125rem;
             color: var(--muted);
             white-space: nowrap;
         }
 
         .subtotal strong {
-            color: var(--ink);
-            font-size: 15px;
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            font-weight: 800;
+            line-height: 1;
+            color: var(--src-ink, var(--ink));
         }
 
         .panel-desc {
-            margin: 0 0 14px 40px;
+            margin: 0 0 16px 42px;
             color: var(--muted);
-            font-size: 13.5px;
+            font-size: 0.875rem;
         }
 
         .panel-head + .items {
-            margin-top: 12px;
+            margin-top: 14px;
+        }
+
+        .src-base {
+            --src: var(--c-base);
+            --src-ink: var(--c-base-ink);
+        }
+
+        .src-magic {
+            --src: var(--c-magic);
+            --src-ink: var(--c-magic-ink);
+        }
+
+        .src-normal {
+            --src: var(--c-normal);
+            --src-ink: var(--c-normal-ink);
+        }
+
+        .src-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 3px;
+            background: var(--src);
+            align-self: center;
         }
 
         /* Base energy */
-        .base-grid {
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-            gap: 14px;
-            align-items: end;
-        }
-
         .demo {
-            grid-column: 1 / -1;
-            margin: 0;
-            padding: 10px;
-            background: var(--surface-2);
-            border: 1px dashed var(--line-strong);
-            border-radius: var(--radius-sm);
+            margin: 0 0 16px;
+            padding: 12px;
+            background: var(--paper-2);
+            border-radius: var(--r-tile);
             display: flex;
             justify-content: center;
         }
@@ -308,6 +423,13 @@
             border-radius: 8px;
         }
 
+        .base-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
+            gap: 14px;
+            align-items: end;
+        }
+
         .field {
             display: flex;
             flex-direction: column;
@@ -316,7 +438,7 @@
         }
 
         .field-label {
-            font-size: 14px;
+            font-size: 0.875rem;
             font-weight: 700;
             color: var(--ink-2);
             display: flex;
@@ -326,7 +448,7 @@
         }
 
         .tag {
-            font-size: 12px;
+            font-size: 0.75rem;
             font-weight: 500;
             color: var(--muted);
         }
@@ -334,29 +456,32 @@
         .input {
             width: 100%;
             font: inherit;
-            font-size: 16px;
+            font-size: max(16px, 1rem);
+            font-weight: 600;
             font-variant-numeric: tabular-nums;
-            min-height: 44px;
-            padding: 10px 12px;
-            border: 1px solid var(--line-strong);
-            border-radius: var(--radius-sm);
-            background: #fff;
+            min-height: 46px;
+            padding: 10px 16px;
+            border: 1.5px solid var(--line-strong);
+            border-radius: var(--r-pill);
+            background: var(--paper);
             color: var(--ink);
             transition: border-color 0.15s ease, box-shadow 0.15s ease;
         }
 
         .input::placeholder {
-            color: #9aa3b2;
+            color: var(--placeholder);
+            font-weight: 400;
+            opacity: 1;
         }
 
         .input:hover {
-            border-color: #a9b4c4;
+            border-color: var(--muted);
         }
 
         .input:focus {
             outline: none;
             border-color: var(--focus);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+            box-shadow: 0 0 0 4px color-mix(in srgb, var(--focus) 25%, transparent);
         }
 
         .input-wrap {
@@ -364,12 +489,12 @@
         }
 
         .input-wrap .input {
-            padding-right: 44px;
+            padding-right: 48px;
         }
 
         .input-wrap .unit {
             position: absolute;
-            right: 12px;
+            right: 14px;
             top: 50%;
             transform: translateY(-50%);
             width: 24px;
@@ -378,41 +503,45 @@
             pointer-events: none;
         }
 
+        .field.has-value .input {
+            border-color: var(--src);
+        }
+
         /* Item tiles */
         .items {
             display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 12px;
+            grid-template-columns: repeat(auto-fill, minmax(min(100%, 11rem), 1fr));
+            gap: 10px;
         }
 
         .item {
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            padding: 10px;
-            border: 1px solid var(--line);
-            border-radius: var(--radius-sm);
-            background: var(--surface-2);
+            gap: 8px;
+            padding: 12px;
+            border: 1.5px solid transparent;
+            border-radius: var(--r-tile);
+            background: var(--paper-2);
             min-width: 0;
-            transition: border-color 0.15s ease, background-color 0.15s ease;
+            transition: border-color 0.2s ease, background-color 0.2s ease;
         }
 
         .item.has-value {
-            border-color: #f3c97a;
-            background: var(--energy-soft);
+            border-color: color-mix(in srgb, var(--src) 60%, transparent);
+            background: color-mix(in srgb, var(--src) 8%, var(--paper));
         }
 
         .item-label {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             min-width: 0;
             cursor: pointer;
         }
 
         .item-label img {
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             object-fit: contain;
             flex: 0 0 auto;
         }
@@ -424,7 +553,7 @@
         }
 
         .item-name {
-            font-size: 14px;
+            font-size: 0.875rem;
             font-weight: 700;
             color: var(--ink);
             line-height: 1.25;
@@ -432,7 +561,7 @@
         }
 
         .item-rate {
-            font-size: 12px;
+            font-size: 0.75rem;
             color: var(--muted);
             display: inline-flex;
             align-items: center;
@@ -441,149 +570,195 @@
         }
 
         .bolt {
-            width: 13px;
-            height: 13px;
+            width: 14px;
+            height: 14px;
             object-fit: contain;
         }
 
         .item .input {
-            min-height: 42px;
-            padding: 8px 10px;
+            min-height: 44px;
+            padding: 8px 14px;
         }
 
         .item-conv {
-            font-size: 12.5px;
+            font-size: 0.8125rem;
             color: var(--muted);
             min-height: 1.4em;
+            padding-left: 4px;
         }
 
         .item.has-value .item-conv {
-            color: var(--energy-ink);
+            color: var(--src-ink);
             font-weight: 700;
         }
 
         .input-tip {
-            font-size: 12.5px;
+            font-size: 0.8125rem;
             color: var(--muted);
-            margin: 12px 0 0;
+            margin: 14px 0 0;
         }
 
         .actions {
             display: flex;
+            flex-wrap: wrap;
+            align-items: center;
             justify-content: flex-end;
+            gap: 10px;
+            padding: 0 24px 22px;
         }
 
         .btn-ghost {
             font: inherit;
-            font-size: 14px;
+            font-size: 0.875rem;
+            font-weight: 600;
             min-height: 44px;
-            padding: 8px 16px;
-            border-radius: 999px;
-            border: 1px solid var(--line-strong);
-            background: var(--surface);
+            padding: 8px 18px;
+            border-radius: var(--r-pill);
+            border: 1.5px solid var(--line-strong);
+            background: transparent;
             color: var(--ink-2);
             cursor: pointer;
+            transition: border-color 0.15s ease, background-color 0.15s ease;
         }
 
         .btn-ghost:hover {
-            background: var(--surface-2);
-            border-color: #a9b4c4;
+            border-color: var(--muted);
         }
 
-        /* ---------- Result panel ---------- */
+        .btn-ghost:active {
+            background: var(--paper-2);
+        }
+
+        .undo-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 4px 4px 4px 16px;
+            border-radius: var(--r-pill);
+            background: var(--ink);
+            color: var(--paper);
+            font-size: 0.875rem;
+        }
+
+        .undo-bar[hidden] {
+            display: none;
+        }
+
+        .undo-bar button {
+            font: inherit;
+            font-weight: 700;
+            min-height: 36px;
+            padding: 4px 16px;
+            border-radius: var(--r-pill);
+            border: 0;
+            background: var(--gold);
+            color: #14213d;
+            cursor: pointer;
+        }
+
+        /* ---------- Result panel：整頁唯一的深色區塊 ---------- */
         .result {
             position: sticky;
             top: 16px;
             max-height: calc(100vh - 32px);
             overflow-y: auto;
-            background: var(--surface);
-            border: 1px solid var(--line);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
+            background: var(--night);
+            color: var(--on-night);
+            border-radius: var(--r-sheet);
+            box-shadow: 0 18px 40px -18px rgba(23, 36, 90, 0.7);
             scroll-margin-top: 16px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--night-2) transparent;
         }
 
         .result-hero {
-            background: var(--navy);
-            color: #fff;
-            padding: 18px 20px 20px;
+            padding: 22px 22px 18px;
         }
 
         .eyebrow {
             margin: 0;
-            font-size: 13px;
-            color: #cbd5e1;
+            font-size: 0.875rem;
+            color: var(--on-night-muted);
             font-weight: 600;
         }
 
+        /* 招牌數字：遊戲風格的粗圓體 */
         .group-big {
-            margin: 4px 0 0;
-            font-size: clamp(30px, 4vw, 38px);
-            line-height: 1.15;
-            font-weight: 900;
-            color: var(--energy);
-            letter-spacing: 0.3px;
+            margin: 2px 0 0;
+            font-family: var(--font-display);
+            font-size: clamp(2.375rem, 4.6vw, 3rem);
+            line-height: 1.05;
+            font-weight: 800;
+            color: var(--gold);
+            text-shadow: 0 3px 0 rgba(0, 0, 0, 0.28);
+            letter-spacing: 0.5px;
         }
 
         .group-big.is-empty {
-            color: #94a3b8;
-            font-size: 24px;
+            color: var(--on-night-muted);
+            text-shadow: none;
+            font-size: 1.75rem;
         }
 
         .hero-total {
             margin-top: 14px;
-            padding-top: 14px;
-            border-top: 1px solid rgba(255, 255, 255, 0.14);
+            padding: 10px 14px;
+            border-radius: var(--r-tile);
+            background: var(--night-2);
             display: flex;
-            align-items: baseline;
+            align-items: center;
             justify-content: space-between;
             gap: 12px;
         }
 
         .hero-total > span {
-            font-size: 13px;
-            color: #cbd5e1;
+            font-size: 0.8125rem;
+            color: var(--on-night-muted);
         }
 
         .hero-total strong {
-            font-size: 26px;
+            font-family: var(--font-display);
+            font-size: 1.75rem;
             font-weight: 800;
+            line-height: 1;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            color: var(--capsule);
         }
 
         .hero-total strong img {
-            width: 22px;
-            height: 22px;
+            width: 26px;
+            height: 26px;
         }
 
         .result-body {
-            padding: 16px 20px 18px;
+            padding: 4px 22px 22px;
             display: grid;
-            gap: 14px;
+            gap: 18px;
         }
 
         .block-title {
-            margin: 0 0 8px;
-            font-size: 13px;
+            margin: 0 0 10px;
+            font-size: 0.8125rem;
             font-weight: 700;
-            color: var(--muted);
-            letter-spacing: 0.2px;
+            color: var(--on-night-muted);
         }
 
         /* breakdown */
         .stack {
             display: flex;
-            height: 10px;
-            border-radius: 999px;
+            gap: 2px;
+            height: 8px;
+            border-radius: var(--r-pill);
             overflow: hidden;
-            background: var(--line);
+            background: var(--night-2);
         }
 
         .stack span {
             height: 100%;
-            transition: width 0.25s ease;
+            background: var(--src);
+            transition: width 0.3s var(--ease-out);
         }
 
         .legend {
@@ -598,7 +773,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 14px;
+            font-size: 0.875rem;
         }
 
         .legend i {
@@ -606,11 +781,12 @@
             height: 10px;
             border-radius: 3px;
             flex: 0 0 auto;
+            background: var(--src);
         }
 
         .legend .lbl {
             flex: 1 1 auto;
-            color: var(--ink-2);
+            color: var(--on-night-muted);
             min-width: 0;
         }
 
@@ -618,25 +794,20 @@
             font-weight: 700;
         }
 
-        /* next group */
         .next {
-            padding: 12px 14px;
-            border-radius: var(--radius-sm);
-            background: var(--surface-2);
-            border: 1px solid var(--line);
-            font-size: 14px;
-            color: var(--ink-2);
+            font-size: 0.875rem;
+            color: var(--on-night-muted);
         }
 
         .next strong {
-            color: var(--ink);
+            color: var(--on-night);
         }
 
         .progress {
             margin-top: 10px;
             height: 6px;
-            border-radius: 999px;
-            background: var(--line);
+            border-radius: var(--r-pill);
+            background: var(--night-2);
             overflow: hidden;
         }
 
@@ -648,49 +819,112 @@
             display: block;
             height: 100%;
             width: 0;
-            background: var(--energy);
-            transition: width 0.25s ease;
+            background: var(--gold);
+            transition: width 0.3s var(--ease-out);
         }
 
-        /* ladder */
+        /* ---------- 招牌：能量膠囊分組量表 ----------
+         * 分組由下（0）往上（1M）排；左邊膠囊裡的液面 = 你的總能量位置。 */
+        .meter-wrap {
+            display: grid;
+            grid-template-columns: 26px minmax(0, 1fr);
+            gap: 12px;
+        }
+
+        .meter {
+            position: relative;
+            border-radius: var(--r-pill);
+            background: var(--night-2);
+            box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.08);
+            overflow: hidden;
+        }
+
+        .meter::before,
+        .meter::after {
+            /* 膠囊上下的咖啡色蓋子 */
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 10px;
+            background: #7a4a2a;
+            z-index: 2;
+        }
+
+        .meter::before {
+            top: 0;
+        }
+
+        .meter::after {
+            bottom: 0;
+        }
+
+        .meter-fill {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 0;
+            background: linear-gradient(90deg, var(--capsule-deep), var(--capsule) 55%, #a5ecff);
+            transition: height 0.6s var(--ease-out);
+        }
+
+        .meter-fill::after {
+            /* 液面上的金色刻度 = 你的位置 */
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: -2px;
+            height: 4px;
+            background: var(--gold);
+            box-shadow: 0 0 8px var(--gold);
+        }
+
+        .meter-fill[data-empty] {
+            opacity: 0;
+        }
+
         .ladder {
             list-style: none;
             margin: 0;
-            padding: 0;
-            display: grid;
+            padding: 6px 0;
+            display: flex;
+            flex-direction: column-reverse;
             gap: 2px;
         }
 
         .ladder li {
+            flex: 1 1 0;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 8px;
-            padding: 5px 12px;
-            border-radius: 8px;
-            font-size: 14px;
-            color: var(--muted);
+            min-height: 30px;
+            padding: 3px 12px;
+            border-radius: 9px;
+            font-family: var(--font-display);
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: var(--on-night-muted);
             border: 1px solid transparent;
         }
 
-        .ladder li:nth-child(odd) {
-            background: var(--surface-2);
-        }
-
         .ladder li.active {
-            background: var(--energy-soft);
-            border-color: #f3c97a;
-            color: var(--energy-ink);
+            background: var(--night-2);
+            border-color: color-mix(in srgb, var(--gold) 55%, transparent);
+            color: var(--gold);
             font-weight: 800;
         }
 
         .ladder .here {
-            font-size: 12px;
+            font-family: var(--font);
+            font-size: 0.75rem;
             font-weight: 700;
-            padding: 2px 8px;
-            border-radius: 999px;
-            background: var(--energy);
-            color: var(--navy);
+            padding: 2px 9px;
+            border-radius: var(--r-pill);
+            background: var(--gold);
+            color: #14213d;
             white-space: nowrap;
         }
 
@@ -701,7 +935,7 @@
             padding: 8px 16px 28px;
             text-align: center;
             color: var(--muted);
-            font-size: 13px;
+            font-size: 0.8125rem;
         }
 
         footer p {
@@ -725,11 +959,11 @@
             }
 
             .items {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(min(100%, 9rem), 1fr));
             }
 
             body {
-                padding-bottom: calc(76px + env(safe-area-inset-bottom));
+                padding-bottom: calc(84px + env(safe-area-inset-bottom));
             }
 
             .mbar {
@@ -741,15 +975,26 @@
                 z-index: 10;
                 align-items: center;
                 gap: 12px;
-                padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
-                background: var(--navy);
-                color: #fff;
-                box-shadow: 0 -6px 20px rgba(15, 23, 42, 0.25);
-                transition: transform 0.2s ease;
+                padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+                background: var(--night);
+                color: var(--on-night);
+                box-shadow: 0 -8px 24px -8px rgba(0, 0, 0, 0.35);
+                transition: transform 0.25s var(--ease-out);
             }
 
             .mbar.is-hidden {
                 transform: translateY(110%);
+            }
+
+            /* 頂端細線：離下一組的進度 */
+            .mbar-progress {
+                position: absolute;
+                left: 0;
+                top: 0;
+                height: 3px;
+                width: 0;
+                background: var(--gold);
+                transition: width 0.3s var(--ease-out);
             }
 
             .mbar-cell {
@@ -760,23 +1005,26 @@
             }
 
             .mbar-cell span {
-                font-size: 11.5px;
-                color: #cbd5e1;
+                font-size: 0.75rem;
+                color: var(--on-night-muted);
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
             }
 
             .mbar-cell strong {
-                font-size: 18px;
-                line-height: 1.2;
+                font-family: var(--font-display);
+                font-size: 1.3125rem;
+                font-weight: 800;
+                line-height: 1.15;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
+                color: var(--capsule);
             }
 
             .mbar-cell.group strong {
-                color: var(--energy);
+                color: var(--gold);
             }
 
             .mbar a {
@@ -784,24 +1032,30 @@
                 min-height: 44px;
                 display: inline-flex;
                 align-items: center;
-                padding: 0 14px;
-                border-radius: 999px;
-                background: var(--energy);
-                color: var(--navy);
+                padding: 0 18px;
+                border-radius: var(--r-pill);
+                background: var(--gold);
+                color: #14213d;
                 font-weight: 800;
-                font-size: 14px;
+                font-size: 0.875rem;
                 text-decoration: none;
                 white-space: nowrap;
+            }
+
+            .mbar a:active {
+                filter: brightness(0.92);
             }
         }
 
         @media (max-width: 640px) {
             .topbar {
-                padding: 14px 12px 16px;
+                padding: 14px 12px 4px;
+                padding-top: max(14px, env(safe-area-inset-top));
             }
 
             .topbar-inner {
                 grid-template-columns: minmax(0, 1fr);
+                gap: 12px;
             }
 
             .lang {
@@ -810,12 +1064,12 @@
             }
 
             .brand img {
-                width: 40px;
-                height: 40px;
+                width: 44px;
+                height: 44px;
             }
 
             .brand p {
-                font-size: 13px;
+                font-size: 0.875rem;
             }
 
             .steps {
@@ -824,27 +1078,32 @@
                 gap: 6px;
             }
 
-            .steps li {
-                font-size: 12px;
+            .steps a {
+                font-size: 0.75rem;
                 line-height: 1.25;
                 gap: 6px;
+                min-height: 44px;
                 padding: 5px 8px 5px 5px;
-                border-radius: 12px;
+                border-radius: 14px;
             }
 
-            .steps li b {
-                flex: 0 0 auto;
-                width: 20px;
-                height: 20px;
-                font-size: 11px;
+            .steps b {
+                width: max(22px, 1.8em);
+                height: max(22px, 1.8em);
+                font-size: 0.75rem;
             }
 
             .page {
-                padding: 14px 12px 24px;
+                padding: 12px 12px 24px;
+            }
+
+            .inputs,
+            .result {
+                border-radius: 18px;
             }
 
             .panel {
-                padding: 14px 14px 16px;
+                padding: 18px 14px 18px;
             }
 
             .panel-desc {
@@ -856,12 +1115,11 @@
             }
 
             .panel-head h2 {
-                font-size: 17px;
+                font-size: 1.0625rem;
             }
 
-            .subtotal {
-                font-size: 12px;
-                text-align: right;
+            .actions {
+                padding: 0 14px 18px;
             }
 
             .items {
@@ -869,29 +1127,28 @@
             }
 
             .item {
-                padding: 8px;
+                padding: 10px;
+            }
+
+            .item-label {
+                gap: 8px;
             }
 
             .item-label img {
-                width: 28px;
-                height: 28px;
+                width: 30px;
+                height: 30px;
             }
 
             .item-name {
-                font-size: 13px;
+                font-size: 0.8125rem;
             }
 
-            .result-hero,
+            .result-hero {
+                padding: 20px 16px 16px;
+            }
+
             .result-body {
-                padding-left: 16px;
-                padding-right: 16px;
-            }
-        }
-
-        @media (max-width: 340px) {
-            .items,
-            .base-grid {
-                grid-template-columns: minmax(0, 1fr);
+                padding: 4px 16px 20px;
             }
         }
 
@@ -899,6 +1156,14 @@
             * {
                 transition: none !important;
                 scroll-behavior: auto !important;
+            }
+        }
+
+        @media (prefers-contrast: more) {
+            :root {
+                --muted: var(--ink-2);
+                --line: var(--line-strong);
+                --on-night-muted: #ffffff;
             }
         }
     </style>
@@ -934,9 +1199,9 @@
             </div>
 
             <ol class="steps">
-                <li><b>1</b><span data-i18n="stepChip1">填基礎能量</span></li>
-                <li><b>2</b><span data-i18n="stepChip2">填剩餘道具</span></li>
-                <li><b>3</b><span data-i18n="stepChip3">看預估分組</span></li>
+                <li><a href="#step1"><b>1</b><span data-i18n="stepChip1">填基礎能量</span></a></li>
+                <li><a href="#step2"><b>2</b><span data-i18n="stepChip2">填剩餘道具</span></a></li>
+                <li><a href="#result"><b>3</b><span data-i18n="stepChip3">看預估分組</span></a></li>
             </ol>
         </div>
     </header>
@@ -945,18 +1210,19 @@
         <main class="layout">
             <div class="inputs">
                 <!-- 步驟 1：基礎能量 -->
-                <section class="panel" id="step1" aria-labelledby="step1Title">
+                <section class="panel src-base" id="step1" aria-labelledby="step1Title">
                     <div class="panel-head">
                         <span class="step-no">1</span>
                         <h2 id="step1Title" data-i18n="baseEnergySection">基礎能量</h2>
                     </div>
                     <p class="panel-desc" data-i18n="baseEnergyDesc">對照下圖，填入遊戲畫面上的兩個數字。</p>
 
-                    <div class="base-grid">
-                        <figure class="demo">
+                    <figure class="demo">
                             <img src="images/total-energy-demo.png" width="568" height="164"
                                 alt="Base energy and extra energy location in game" />
                         </figure>
+
+                    <div class="base-grid">
 
                         <div class="field">
                             <label class="field-label" for="baseEnergy">
@@ -985,11 +1251,11 @@
                 </section>
 
                 <!-- 步驟 2：魔法王國道具（欄位由 JS 依 items 產生） -->
-                <section class="panel" id="step2" aria-labelledby="step2Title">
+                <section class="panel src-magic" id="step2" aria-labelledby="step2Title">
                     <div class="panel-head">
                         <span class="step-no">2</span>
                         <h2 id="step2Title" data-i18n="magicKingdomSection">魔法王國剩餘道具</h2>
-                        <span class="subtotal"><span data-i18n="subtotal">小計</span>
+                        <span class="subtotal"><i class="src-dot"></i><span data-i18n="subtotal">小計</span>
                             <strong class="num" id="magicSubtotal">0</strong></span>
                     </div>
                     <p class="panel-desc" data-i18n="itemsDesc">沒有的道具留空即可，每格下方會即時顯示換算後的能量。</p>
@@ -998,17 +1264,21 @@
                 </section>
 
                 <!-- 步驟 2：一般活動道具 -->
-                <section class="panel" id="step2b" aria-labelledby="step2bTitle">
+                <section class="panel src-normal" id="step2b" aria-labelledby="step2bTitle">
                     <div class="panel-head">
                         <span class="step-no">2</span>
                         <h2 id="step2bTitle" data-i18n="normalItemsSection">一般活動道具</h2>
-                        <span class="subtotal"><span data-i18n="subtotal">小計</span>
+                        <span class="subtotal"><i class="src-dot"></i><span data-i18n="subtotal">小計</span>
                             <strong class="num" id="normalSubtotal">0</strong></span>
                     </div>
                     <div class="items" id="normalItems"></div>
                 </section>
 
                 <div class="actions">
+                    <div class="undo-bar" id="undoBar" role="status" hidden>
+                        <span data-i18n="cleared">已清除所有欄位</span>
+                        <button type="button" id="undoBtn" data-i18n="undo">復原</button>
+                    </div>
                     <button type="button" class="btn-ghost" id="resetBtn" data-i18n="resetAll">清除全部</button>
                 </div>
             </div>
@@ -1030,18 +1300,18 @@
                     <div>
                         <h3 class="block-title" data-i18n="breakdownTitle">能量來源</h3>
                         <div class="stack" aria-hidden="true">
-                            <span id="barBase" style="background:var(--c-base);width:0"></span>
-                            <span id="barMagic" style="background:var(--c-magic);width:0"></span>
-                            <span id="barNormal" style="background:var(--c-normal);width:0"></span>
+                            <span id="barBase" class="src-base" style="width:0"></span>
+                            <span id="barMagic" class="src-magic" style="width:0"></span>
+                            <span id="barNormal" class="src-normal" style="width:0"></span>
                         </div>
                         <ul class="legend">
-                            <li><i style="background:var(--c-base)"></i><span class="lbl"
+                            <li class="src-base"><i></i><span class="lbl"
                                     data-i18n="basePlusExtraEnergy">基本 + 額外能量</span><strong class="num"
                                     id="baseExtraText">0</strong></li>
-                            <li><i style="background:var(--c-magic)"></i><span class="lbl"
+                            <li class="src-magic"><i></i><span class="lbl"
                                     data-i18n="magicKingdomShort">魔法王國道具</span><strong class="num"
                                     id="magicText">0</strong></li>
-                            <li><i style="background:var(--c-normal)"></i><span class="lbl"
+                            <li class="src-normal"><i></i><span class="lbl"
                                     data-i18n="normalItemsShort">一般活動道具</span><strong class="num"
                                     id="normalText">0</strong></li>
                         </ul>
@@ -1054,7 +1324,10 @@
 
                     <div>
                         <h3 class="block-title" data-i18n="groupTableTitle">分組對照表（新活動前所剩能量）</h3>
-                        <ol class="ladder num" id="ladder"></ol>
+                        <div class="meter-wrap">
+                            <div class="meter" aria-hidden="true"><span class="meter-fill" id="meterFill" data-empty></span></div>
+                            <ol class="ladder num" id="ladder"></ol>
+                        </div>
                     </div>
                 </div>
             </aside>
@@ -1068,6 +1341,7 @@
 
     <!-- 手機版：固定在底部的結果列 -->
     <div class="mbar" id="mbar">
+        <span class="mbar-progress" id="mbarProgress" aria-hidden="true"></span>
         <div class="mbar-cell">
             <span data-i18n="playerTotalEnergy">玩家總能量</span>
             <strong class="num" id="mobileTotalEnergyText">0</strong>
@@ -1104,6 +1378,8 @@
                 potionTip: "藥水數量很大時，可以輸入 500k 或 1.2M。",
                 subtotal: "小計",
                 resetAll: "清除全部",
+                cleared: "已清除所有欄位",
+                undo: "復原",
                 bronzeKey: "銅鑰匙",
                 goldKey: "金鑰匙",
                 bluePotion: "藍色藥水",
@@ -1159,6 +1435,8 @@
                 potionTip: "For large potion counts you can type 500k or 1.2M.",
                 subtotal: "Subtotal",
                 resetAll: "Clear all",
+                cleared: "All fields cleared",
+                undo: "Undo",
                 bronzeKey: "Bronze Key",
                 goldKey: "Gold Key",
                 bluePotion: "Blue Potion",
@@ -1214,6 +1492,8 @@
                 potionTip: "Số thuốc lớn có thể nhập 500k hoặc 1.2M.",
                 subtotal: "Tạm tính",
                 resetAll: "Xóa tất cả",
+                cleared: "Đã xóa tất cả",
+                undo: "Hoàn tác",
                 bronzeKey: "Chìa khóa đồng",
                 goldKey: "Chìa khóa vàng",
                 bluePotion: "Thuốc xanh",
@@ -1269,6 +1549,8 @@
                 potionTip: "ポーションの数が多い場合は 500k や 1.2M と入力できます。",
                 subtotal: "小計",
                 resetAll: "すべてクリア",
+                cleared: "すべての欄をクリアしました",
+                undo: "元に戻す",
                 bronzeKey: "銅の鍵",
                 goldKey: "金の鍵",
                 bluePotion: "青いポーション",
@@ -1324,6 +1606,8 @@
                 potionTip: "물약 수가 많으면 500k 또는 1.2M처럼 입력할 수 있습니다.",
                 subtotal: "소계",
                 resetAll: "모두 지우기",
+                cleared: "모든 칸을 지웠습니다",
+                undo: "실행 취소",
                 bronzeKey: "청동 열쇠",
                 goldKey: "황금 열쇠",
                 bluePotion: "파란 물약",
@@ -1379,6 +1663,8 @@
                 potionTip: "ถ้ายามีจำนวนมาก สามารถพิมพ์ 500k หรือ 1.2M ได้",
                 subtotal: "รวมย่อย",
                 resetAll: "ล้างทั้งหมด",
+                cleared: "ล้างทุกช่องแล้ว",
+                undo: "เลิกทำ",
                 bronzeKey: "กุญแจทองแดง",
                 goldKey: "กุญแจทอง",
                 bluePotion: "ยาสีฟ้า",
@@ -1434,6 +1720,8 @@
                 potionTip: "Untuk jumlah ramuan yang besar, bisa ketik 500k atau 1.2M.",
                 subtotal: "Subtotal",
                 resetAll: "Hapus semua",
+                cleared: "Semua kolom dihapus",
+                undo: "Urungkan",
                 bronzeKey: "Kunci Perunggu",
                 goldKey: "Kunci Emas",
                 bluePotion: "Ramuan Biru",
@@ -1489,6 +1777,8 @@
                 potionTip: "Si tienes muchas pociones, puedes escribir 500k o 1.2M.",
                 subtotal: "Subtotal",
                 resetAll: "Borrar todo",
+                cleared: "Se borraron todos los campos",
+                undo: "Deshacer",
                 bronzeKey: "Llave de bronce",
                 goldKey: "Llave de oro",
                 bluePotion: "Poción azul",
@@ -1544,6 +1834,8 @@
                 potionTip: "Para muitas poções, você pode digitar 500k ou 1.2M.",
                 subtotal: "Subtotal",
                 resetAll: "Limpar tudo",
+                cleared: "Todos os campos foram limpos",
+                undo: "Desfazer",
                 bronzeKey: "Chave de bronze",
                 goldKey: "Chave de ouro",
                 bluePotion: "Poção azul",
@@ -1757,6 +2049,18 @@
             return parseNumber(input.value, decimalAllowedIds.includes(id));
         }
 
+        // 總能量 ≥ 1M 時改用 M 顯示（無條件捨去到小數 2 位，避免 999,999 被進位成 1M）
+        function formatCompact(num) {
+            if (!isFinite(num) || num < 1000000) return formatNumber(num);
+            const millions = Math.floor(num / 10000) / 100;
+            return millions.toLocaleString(LOCALE_MAP[currentLang] || "zh-TW", { maximumFractionDigits: 2 }) + "M";
+        }
+
+        const LOCALE_MAP = {
+            "zh-Hant": "zh-TW", en: "en-US", vi: "vi-VN", ja: "ja-JP", ko: "ko-KR",
+            th: "th-TH", id: "id-ID", es: "es-ES", pt: "pt-BR"
+        };
+
         function formatNumber(num) {
             if (!isFinite(num)) return "∞";
             const localeMap = {
@@ -1807,12 +2111,19 @@
             const itemData = calculateItemEnergy();
 
             const totalEnergy = Math.floor(baseEnergy + extraEnergy + itemData.totalItemEnergy);
+            baseIds.forEach(id => $(id).closest(".field").classList.toggle("has-value", $(id).value.trim() !== ""));
+            saveInputs();
             const filled = hasAnyInput();
             const group = filled ? findGroup(totalEnergy) : null;
 
             // 總能量與小計
-            $("totalEnergyText").textContent = formatNumber(totalEnergy);
-            $("mobileTotalEnergyText").textContent = formatNumber(totalEnergy);
+            // 玩家總能量：太大時顯示 M，完整數字放在 title / 螢幕閱讀器
+            ["totalEnergyText", "mobileTotalEnergyText"].forEach(id => {
+                const el = $(id);
+                el.textContent = formatCompact(totalEnergy);
+                el.title = formatNumber(totalEnergy);
+                el.setAttribute("aria-label", formatNumber(totalEnergy));
+            });
             $("magicSubtotal").textContent = formatNumber(itemData.magicKingdomEnergy);
             $("normalSubtotal").textContent = formatNumber(itemData.normalEventEnergy);
 
@@ -1843,6 +2154,38 @@
 
             renderNext(filled, group, totalEnergy);
             renderLadder(group ? group.rangeLabel : null);
+            updateMeter(filled, group, totalEnergy);
+        }
+
+        // 能量膠囊量表：分組由下往上，液面高度 = 目前分組 + 在該組內的進度
+        function updateMeter(filled, group, totalEnergy) {
+            const fill = $("meterFill");
+            const bar = $("mbarProgress");
+            const rows = groupRows.length;
+
+            if (!filled) {
+                fill.style.height = "0";
+                fill.setAttribute("data-empty", "");
+                bar.style.width = "0";
+                return;
+            }
+
+            let position;
+            let toNext = 0;
+            if (group) {
+                const idx = groupRows.indexOf(group);
+                const next = groupRows[idx + 1];
+                const span = next ? next.min - group.min : group.min;
+                const frac = Math.max(0, Math.min(1, (totalEnergy - group.min) / span));
+                position = idx + frac;
+                toNext = next ? frac : 1;
+            } else {
+                position = groupRows.findIndex(row => row.min > totalEnergy);
+            }
+
+            fill.removeAttribute("data-empty");
+            fill.style.height = `calc(6px + (100% - 12px) * ${position / rows})`;
+            bar.style.width = `${toNext * 100}%`;
         }
 
         function renderNext(filled, group, totalEnergy) {
@@ -1897,6 +2240,32 @@
             });
         }
 
+        /* ---------- 輸入保存：切回遊戲看數字再回來，頁面被系統重新載入也不會遺失 ---------- */
+        const STORAGE_KEY = "calculatorInputs";
+
+        function readInputs() {
+            const data = {};
+            allInputIds.forEach(id => { if ($(id).value) data[id] = $(id).value; });
+            return data;
+        }
+
+        function writeInputs(data) {
+            allInputIds.forEach(id => {
+                $(id).value = sanitizeInputValue(data[id] || "", decimalAllowedIds.includes(id));
+            });
+        }
+
+        function saveInputs() {
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(readInputs())); } catch (e) { /* ignore */ }
+        }
+
+        function restoreInputs() {
+            try {
+                const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+                if (data && typeof data === "object") writeInputs(data);
+            } catch (e) { /* ignore */ }
+        }
+
         /* ---------- 事件 ---------- */
         function bindInputs() {
             allInputIds.forEach(id => {
@@ -1915,12 +2284,35 @@
                 });
             });
 
+            let undoSnapshot = null;
+            let undoTimer = null;
+            const undoBar = $("undoBar");
+
+            const hideUndo = () => {
+                undoBar.hidden = true;
+                undoSnapshot = null;
+                clearTimeout(undoTimer);
+            };
+
+            // 清除是預期的結果，不跳警告；改成提供「復原」（feedback.md / undo）
             $("resetBtn").addEventListener("click", () => {
+                if (!hasAnyInput()) return;
+                undoSnapshot = readInputs();
                 allInputIds.forEach(id => { $(id).value = ""; });
                 calculateAll();
-                $("step1").scrollIntoView({ behavior: "smooth", block: "start" });
-                $("baseEnergy").focus({ preventScroll: true });
+                undoBar.hidden = false;
+                clearTimeout(undoTimer);
+                undoTimer = setTimeout(hideUndo, 8000);
+                $("undoBtn").focus({ preventScroll: true });
             });
+
+            $("undoBtn").addEventListener("click", () => {
+                if (undoSnapshot) writeInputs(undoSnapshot);
+                hideUndo();
+                calculateAll();
+            });
+
+            allInputIds.forEach(id => $(id).addEventListener("input", () => { if (!undoBar.hidden) hideUndo(); }));
         }
 
         function bindLanguageSwitcher() {
@@ -1945,6 +2337,7 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             renderItems();
+            restoreInputs();
             bindLanguageSwitcher();
             bindInputs();
             bindMobileBar();
