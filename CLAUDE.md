@@ -37,6 +37,7 @@ python -m http.server 5173
   靜態文字用 `data-i18n="key"`，placeholder 用 `data-i18n-placeholder`，圖片 alt 用 `data-i18n-alt`，`aria-label` 用 `data-i18n-aria-label`。缺 key 會 fallback 到繁中。
 - `calculateAll()`：每次輸入都重算總能量、小計、能量來源比例條、預估分組、下一組進度與分組對照表。
 - 計算精度：道具能量相加後才 `Math.floor`，加總順序依 `items` 陣列順序（與舊版逐項相加一致）。
+  例外：`roundUp: true` 的道具先各自 `Math.ceil`（失落魔藥單數瓶無條件進位）。
 
 ## 新增道具的步驟
 

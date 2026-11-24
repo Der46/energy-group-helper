@@ -2000,6 +2000,7 @@
 
         // 道具換算比例：mul = 1 個道具換幾點能量；div = 幾個道具換 1 點能量
         // section：magic = 魔法王國、normal = 一般活動；decimal = 允許小數與 K/M
+        // roundUp = 該道具換算後無條件進位（失落魔藥 3 瓶 = 7.5 → 8）
         const items = [
             { id: "bronzeKey", icon: "bronze-key", section: "magic", mul: 100 },
             { id: "goldKey", icon: "gold-key", section: "magic", mul: 250 },
@@ -2017,7 +2018,7 @@
             { id: "bossCoin", icon: "boss-coin", section: "normal", div: 100 },
             { id: "farmCoin", icon: "farm-coin", section: "normal", div: 100 },
             { id: "avalancheCoin", icon: "avalanche-coin", section: "normal", div: 20 },
-            { id: "lostPotion", icon: "lost-potion", section: "normal", mul: 2.5 },
+            { id: "lostPotion", icon: "lost-potion", section: "normal", mul: 2.5, roundUp: true },
             { id: "lostPuzzle", icon: "lost-puzzle", section: "normal", mul: 10 }
         ];
 
@@ -2209,7 +2210,8 @@
 
         /* ---------- 計算 ---------- */
         function itemEnergy(item, count) {
-            return item.mul ? count * item.mul : count / item.div;
+            const energy = item.mul ? count * item.mul : count / item.div;
+            return item.roundUp ? Math.ceil(energy) : energy;
         }
 
         function calculateItemEnergy() {
