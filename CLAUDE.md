@@ -32,9 +32,9 @@ python -m http.server 5173
 - `groupRows`：分組區間（`min`/`max` 為閉區間）。`rangeLabel` 用於比對，不要翻譯；顯示用 `displayRange()`（最高組改用 `topRange` 翻譯）。
   注意區間之間有空隙（例如 4,901–4,999），落在空隙會顯示「不在區間內」並提示到下一組還差多少。
 - `translations`：`zh-Hant` / `en` / `vi` / `ja` / `ko` / `th` / `id` / `es` / `pt` 共九語。新增 UI 文字時每個語言都要加 key；
-  新增語言要同時改 `<select id="languageSelect">` 的 option 與 `formatNumber()` 的 `localeMap`。
+  新增語言要同時改 `<select id="languageSelect">` 的 option 與 `LOCALE_MAP`（數字格式）。
   泰文沒有空格，標題等長字串在詞與詞之間插入零寬空格（`\u200b`）避免斷在字中間；
-  靜態文字用 `data-i18n="key"`，placeholder 用 `data-i18n-placeholder`。缺 key 會 fallback 到繁中。
+  靜態文字用 `data-i18n="key"`，placeholder 用 `data-i18n-placeholder`，圖片 alt 用 `data-i18n-alt`，`aria-label` 用 `data-i18n-aria-label`。缺 key 會 fallback 到繁中。
 - `calculateAll()`：每次輸入都重算總能量、小計、能量來源比例條、預估分組、下一組進度與分組對照表。
 - 計算精度：道具能量相加後才 `Math.floor`，加總順序依 `items` 陣列順序（與舊版逐項相加一致）。
 
@@ -42,7 +42,7 @@ python -m http.server 5173
 
 1. 圖示放到 `images/<icon>.png`
 2. 在 `items` 加一筆 `{ id, icon, section, mul | div }`
-3. 在三個語言的 `translations` 加上 `<id>` 名稱
+3. 在九個語言的 `translations` 加上 `<id>` 名稱（`mul` 可以是小數，例如失落魔藥 2.5）
 4. 更新 `README.md` 的換算比例表
 
 ## UI / UX 原則

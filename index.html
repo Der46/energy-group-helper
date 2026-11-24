@@ -16,6 +16,8 @@
     <meta name="theme-color" content="#e6eff7" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0b1228" media="(prefers-color-scheme: dark)" />
     <meta name="apple-mobile-web-app-title" content="能量換算器" />
+    <!-- Chrome（Android / ChromeOS）：跟隨系統文字大小；iOS 由下方 -apple-system-body 處理 -->
+    <meta name="text-scale" content="scale" />
 
     <style>
         /*
@@ -126,7 +128,7 @@
             background: var(--sky);
             color: var(--ink);
             line-height: 1.5;
-            min-height: 100vh;
+            min-height: 100dvh;
         }
 
         img {
@@ -135,6 +137,29 @@
 
         .num {
             font-variant-numeric: tabular-nums;
+        }
+
+        /* Baloo 2 載入前/離線時，讓系統字型的 x-height 對齊，減少字型替換時的跳動 */
+        .steps b,
+        .step-no,
+        .subtotal strong,
+        .group-big,
+        .hero-total strong,
+        .ladder li,
+        .mbar-cell strong {
+            font-size-adjust: from-font;
+        }
+
+        .visually-hidden {
+            position: absolute;
+            clip-path: inset(50%);
+            overflow: hidden;
+            width: 1px;
+            height: 1px;
+            margin: -1px;
+            padding: 0;
+            border: 0;
+            white-space: nowrap;
         }
 
         :focus-visible {
@@ -186,6 +211,7 @@
             font-weight: 800;
             letter-spacing: 0.2px;
             color: var(--ink);
+            text-wrap: balance;
         }
 
         .byline {
@@ -200,6 +226,7 @@
             color: var(--ink-2);
             font-size: 0.9375rem;
             max-width: 46em;
+            text-wrap: pretty;
         }
 
         .lang {
@@ -234,8 +261,11 @@
         }
 
         /* 步驟：真正的順序，可點擊跳到該區 */
-        .steps {
+        .steps-nav {
             grid-column: 1 / -1;
+        }
+
+        .steps {
             list-style: none;
             margin: 6px 0 0;
             padding: 0;
@@ -351,6 +381,7 @@
             line-height: 1.3;
             flex: 1 1 auto;
             min-width: 0;
+            text-wrap: balance;
         }
 
         .subtotal {
@@ -375,6 +406,7 @@
             margin: 0 0 16px 42px;
             color: var(--muted);
             font-size: 0.875rem;
+            text-wrap: pretty;
         }
 
         .panel-head + .items {
@@ -479,9 +511,9 @@
         }
 
         .input:focus {
-            outline: none;
+            outline: 2px solid transparent; /* forced-colors 模式下會變成系統色；box-shadow 則會被移除 */
             border-color: var(--focus);
-            box-shadow: 0 0 0 4px color-mix(in srgb, var(--focus) 25%, transparent);
+            box-shadow: 0 0 0 4px color-mix(in oklab, var(--focus) 25%, transparent);
         }
 
         .input-wrap {
@@ -527,8 +559,8 @@
         }
 
         .item.has-value {
-            border-color: color-mix(in srgb, var(--src) 60%, transparent);
-            background: color-mix(in srgb, var(--src) 8%, var(--paper));
+            border-color: color-mix(in oklab, var(--src) 60%, transparent);
+            background: color-mix(in oklab, var(--src) 8%, var(--paper));
         }
 
         .item-label {
@@ -539,7 +571,7 @@
             cursor: pointer;
         }
 
-        .item-label img {
+        .item-label > img {
             width: 36px;
             height: 36px;
             object-fit: contain;
@@ -660,7 +692,7 @@
         .result {
             position: sticky;
             top: 16px;
-            max-height: calc(100vh - 32px);
+            max-height: calc(100dvh - 32px);
             overflow-y: auto;
             background: var(--night);
             color: var(--on-night);
@@ -803,24 +835,36 @@
             color: var(--on-night);
         }
 
+        /* 原生 <progress>：螢幕閱讀器會讀出進度值 */
         .progress {
+            display: block;
+            width: 100%;
             margin-top: 10px;
             height: 6px;
+            appearance: none;
+            border: 0 solid;
             border-radius: var(--r-pill);
             background: var(--night-2);
-            overflow: hidden;
+            overflow: clip;
         }
 
         .progress[hidden] {
             display: none;
         }
 
-        .progress span {
-            display: block;
-            height: 100%;
-            width: 0;
+        .progress::-webkit-progress-bar {
+            background: transparent;
+        }
+
+        .progress::-webkit-progress-value {
             background: var(--gold);
-            transition: width 0.3s var(--ease-out);
+            border-radius: var(--r-pill);
+            transition: inline-size 0.3s var(--ease-out);
+        }
+
+        .progress::-moz-progress-bar {
+            background: var(--gold);
+            border-radius: var(--r-pill);
         }
 
         /* ---------- 招牌：能量膠囊分組量表 ----------
@@ -912,7 +956,7 @@
 
         .ladder li.active {
             background: var(--night-2);
-            border-color: color-mix(in srgb, var(--gold) 55%, transparent);
+            border-color: color-mix(in oklab, var(--gold) 55%, transparent);
             color: var(--gold);
             font-weight: 800;
         }
@@ -940,6 +984,7 @@
 
         footer p {
             margin: 4px 0;
+            text-wrap: pretty;
         }
 
         /* ---------- Mobile sticky bar ---------- */
@@ -979,11 +1024,11 @@
                 background: var(--night);
                 color: var(--on-night);
                 box-shadow: 0 -8px 24px -8px rgba(0, 0, 0, 0.35);
-                transition: transform 0.25s var(--ease-out);
+                transition: translate 0.25s var(--ease-out);
             }
 
             .mbar.is-hidden {
-                transform: translateY(110%);
+                translate: 0 110%;
             }
 
             /* 頂端細線：離下一組的進度 */
@@ -1134,7 +1179,7 @@
                 gap: 8px;
             }
 
-            .item-label img {
+            .item-label > img {
                 width: 30px;
                 height: 30px;
             }
@@ -1152,10 +1197,30 @@
             }
         }
 
+        /* 減少動態：只關掉位移與尺寸動畫，保留顏色/邊框的狀態過渡 */
         @media (prefers-reduced-motion: reduce) {
-            * {
-                transition: none !important;
-                scroll-behavior: auto !important;
+            .stack span,
+            .meter-fill,
+            .mbar,
+            .mbar-progress {
+                transition: none;
+            }
+
+            .progress::-webkit-progress-value {
+                transition: none;
+            }
+        }
+
+        /* Windows 高對比（forced colors）：背景色會被系統覆寫，
+           但比例條、量表、圖例的顏色本身就是資訊，保留作者顏色 */
+        @media (forced-colors: active) {
+            .stack,
+            .legend i,
+            .src-dot,
+            .meter,
+            .progress,
+            .mbar-progress {
+                forced-color-adjust: none;
             }
         }
 
@@ -1198,11 +1263,14 @@
                 </select>
             </div>
 
-            <ol class="steps">
-                <li><a href="#step1"><b>1</b><span data-i18n="stepChip1">填基礎能量</span></a></li>
-                <li><a href="#step2"><b>2</b><span data-i18n="stepChip2">填剩餘道具</span></a></li>
-                <li><a href="#result"><b>3</b><span data-i18n="stepChip3">看預估分組</span></a></li>
-            </ol>
+            <nav class="steps-nav" data-i18n-aria-label="stepsLabel" aria-label="步驟">
+                <!-- role="list"：Safari 會拿掉 list-style:none + flex/grid 清單的清單語意 -->
+                <ol class="steps" role="list">
+                    <li><a href="#step1"><b>1</b><span data-i18n="stepChip1">填基礎能量</span></a></li>
+                    <li><a href="#step2"><b>2</b><span data-i18n="stepChip2">填剩餘道具</span></a></li>
+                    <li><a href="#result"><b>3</b><span data-i18n="stepChip3">看預估分組</span></a></li>
+                </ol>
+            </nav>
         </div>
     </header>
 
@@ -1217,10 +1285,10 @@
                     </div>
                     <p class="panel-desc" data-i18n="baseEnergyDesc">對照下圖，填入遊戲畫面上的兩個數字。</p>
 
-                    <figure class="demo">
-                            <img src="images/total-energy-demo.png" width="568" height="164"
-                                alt="Base energy and extra energy location in game" />
-                        </figure>
+                    <div class="demo">
+                        <img src="images/total-energy-demo.png" width="568" height="164"
+                            data-i18n-alt="demoAlt" alt="遊戲畫面中基本能量與額外能量的位置" />
+                    </div>
 
                     <div class="base-grid">
 
@@ -1231,7 +1299,7 @@
                             </label>
                             <div class="input-wrap">
                                 <input class="input" id="baseEnergy" type="text" inputmode="numeric"
-                                    autocomplete="off" placeholder="0" />
+                                    enterkeyhint="next" autocomplete="off" placeholder="0" />
                                 <img class="unit" src="images/energy.png" alt="" width="24" height="24" />
                             </div>
                         </div>
@@ -1243,7 +1311,7 @@
                             </label>
                             <div class="input-wrap">
                                 <input class="input" id="extraEnergy" type="text" inputmode="numeric"
-                                    autocomplete="off" placeholder="0" />
+                                    enterkeyhint="next" autocomplete="off" placeholder="0" />
                                 <img class="unit" src="images/energy.png" alt="" width="24" height="24" />
                             </div>
                         </div>
@@ -1275,9 +1343,12 @@
                 </section>
 
                 <div class="actions">
-                    <div class="undo-bar" id="undoBar" role="status" hidden>
-                        <span data-i18n="cleared">已清除所有欄位</span>
-                        <button type="button" id="undoBtn" data-i18n="undo">復原</button>
+                    <!-- live region 要先存在於 DOM，內容出現時才會被朗讀 -->
+                    <div role="status">
+                        <div class="undo-bar" id="undoBar" hidden>
+                            <span data-i18n="cleared">已清除所有欄位</span>
+                            <button type="button" id="undoBtn" data-i18n="undo">復原</button>
+                        </div>
                     </div>
                     <button type="button" class="btn-ghost" id="resetBtn" data-i18n="resetAll">清除全部</button>
                 </div>
@@ -1286,12 +1357,12 @@
             <!-- 步驟 3：結果 -->
             <aside class="result" id="result" aria-labelledby="resultTitle">
                 <div class="result-hero" aria-live="polite">
-                    <p class="eyebrow" id="resultTitle" data-i18n="nextGroupTitle">下一週預估分組</p>
+                    <h2 class="eyebrow" id="resultTitle" data-i18n="nextGroupTitle">下一週預估分組</h2>
                     <p class="group-big num is-empty" id="nextGroupText">—</p>
 
                     <div class="hero-total">
                         <span data-i18n="playerTotalEnergy">玩家總能量</span>
-                        <strong class="num"><img src="images/energy.png" alt="" /><span
+                        <strong class="num"><img src="images/energy.png" alt="" width="26" height="26" /><span
                                 id="totalEnergyText">0</span></strong>
                     </div>
                 </div>
@@ -1304,7 +1375,7 @@
                             <span id="barMagic" class="src-magic" style="width:0"></span>
                             <span id="barNormal" class="src-normal" style="width:0"></span>
                         </div>
-                        <ul class="legend">
+                        <ul class="legend" role="list">
                             <li class="src-base"><i></i><span class="lbl"
                                     data-i18n="basePlusExtraEnergy">基本 + 額外能量</span><strong class="num"
                                     id="baseExtraText">0</strong></li>
@@ -1319,14 +1390,14 @@
 
                     <div class="next">
                         <div id="nextText"></div>
-                        <div class="progress" id="progressWrap" hidden><span id="progressBar"></span></div>
+                        <progress class="progress" id="progressBar" max="1" value="0" aria-labelledby="nextText" hidden></progress>
                     </div>
 
                     <div>
                         <h3 class="block-title" data-i18n="groupTableTitle">分組對照表（新活動前所剩能量）</h3>
                         <div class="meter-wrap">
                             <div class="meter" aria-hidden="true"><span class="meter-fill" id="meterFill" data-empty></span></div>
-                            <ol class="ladder num" id="ladder"></ol>
+                            <ol class="ladder num" id="ladder" role="list"></ol>
                         </div>
                     </div>
                 </div>
@@ -1395,6 +1466,10 @@
                 bossCoin: "Boss 代幣",
                 farmCoin: "耕種花幣",
                 avalancheCoin: "雪崩代幣",
+                lostPotion: "失落魔藥",
+                lostPuzzle: "失落拼圖",
+                stepsLabel: "步驟",
+                demoAlt: "遊戲畫面中基本能量與額外能量的位置",
                 decimalPlaceholder: "例：500k、1.2M",
                 playerTotalEnergy: "玩家總能量",
                 nextGroupTitle: "下一週預估分組",
@@ -1452,6 +1527,10 @@
                 bossCoin: "Boss Token",
                 farmCoin: "Farm Coin",
                 avalancheCoin: "Avalanche Token",
+                lostPotion: "Lost Potion",
+                lostPuzzle: "Lost Puzzle",
+                stepsLabel: "Steps",
+                demoAlt: "Where base energy and extra energy appear in the game",
                 decimalPlaceholder: "e.g. 500k, 1.2M",
                 playerTotalEnergy: "Total Energy",
                 nextGroupTitle: "Estimated Group Next Week",
@@ -1509,6 +1588,10 @@
                 bossCoin: "Xu Boss",
                 farmCoin: "Xu nông trại",
                 avalancheCoin: "Xu tuyết lở",
+                lostPotion: "Thuốc Thất Lạc",
+                lostPuzzle: "Mảnh Ghép Thất Lạc",
+                stepsLabel: "Các bước",
+                demoAlt: "Vị trí năng lượng cơ bản và năng lượng thêm trong game",
                 decimalPlaceholder: "VD: 500k, 1.2M",
                 playerTotalEnergy: "Tổng năng lượng",
                 nextGroupTitle: "Nhóm dự kiến tuần sau",
@@ -1566,6 +1649,10 @@
                 bossCoin: "ボストークン",
                 farmCoin: "農場コイン",
                 avalancheCoin: "雪崩トークン",
+                lostPotion: "失われた魔法薬",
+                lostPuzzle: "失われたパズル",
+                stepsLabel: "手順",
+                demoAlt: "ゲーム画面での基本エナジーと追加エナジーの位置",
                 decimalPlaceholder: "例：500k、1.2M",
                 playerTotalEnergy: "合計エネルギー",
                 nextGroupTitle: "来週の予測グループ",
@@ -1623,6 +1710,10 @@
                 bossCoin: "보스 토큰",
                 farmCoin: "농장 코인",
                 avalancheCoin: "눈사태 토큰",
+                lostPotion: "잃어버린 물약",
+                lostPuzzle: "잃어버린 퍼즐",
+                stepsLabel: "단계",
+                demoAlt: "게임 화면에서 기본 에너지와 추가 에너지의 위치",
                 decimalPlaceholder: "예: 500k, 1.2M",
                 playerTotalEnergy: "총 에너지",
                 nextGroupTitle: "다음 주 예상 그룹",
@@ -1680,6 +1771,10 @@
                 bossCoin: "โทเคนบอส",
                 farmCoin: "เหรียญฟาร์ม",
                 avalancheCoin: "โทเคนหิมะถล่ม",
+                lostPotion: "ยาวิเศษ​ที่​สาบสูญ",
+                lostPuzzle: "จิ๊กซอว์​ที่​สาบสูญ",
+                stepsLabel: "ขั้นตอน",
+                demoAlt: "ตำแหน่ง​พลังงาน​พื้นฐาน​และ​พลังงาน​เพิ่มเติม​ใน​เกม",
                 decimalPlaceholder: "เช่น 500k, 1.2M",
                 playerTotalEnergy: "พลังงานรวม",
                 nextGroupTitle: "กลุ่มที่คาดการณ์สัปดาห์หน้า",
@@ -1737,6 +1832,10 @@
                 bossCoin: "Token Boss",
                 farmCoin: "Koin Pertanian",
                 avalancheCoin: "Token Longsor",
+                lostPotion: "Ramuan Hilang",
+                lostPuzzle: "Puzzle Hilang",
+                stepsLabel: "Langkah",
+                demoAlt: "Letak energi dasar dan energi tambahan di dalam game",
                 decimalPlaceholder: "mis. 500k, 1.2M",
                 playerTotalEnergy: "Total Energi",
                 nextGroupTitle: "Perkiraan Grup Minggu Depan",
@@ -1794,6 +1893,10 @@
                 bossCoin: "Ficha de jefe",
                 farmCoin: "Moneda de granja",
                 avalancheCoin: "Ficha de avalancha",
+                lostPotion: "Poción perdida",
+                lostPuzzle: "Puzle perdido",
+                stepsLabel: "Pasos",
+                demoAlt: "Dónde aparecen la energía base y la energía extra en el juego",
                 decimalPlaceholder: "p. ej. 500k, 1.2M",
                 playerTotalEnergy: "Energía total",
                 nextGroupTitle: "Grupo estimado la próxima semana",
@@ -1851,6 +1954,10 @@
                 bossCoin: "Ficha do chefe",
                 farmCoin: "Moeda da fazenda",
                 avalancheCoin: "Ficha da avalanche",
+                lostPotion: "Poção Perdida",
+                lostPuzzle: "Quebra-cabeça Perdido",
+                stepsLabel: "Passos",
+                demoAlt: "Onde aparecem a energia base e a energia extra no jogo",
                 decimalPlaceholder: "ex.: 500k, 1.2M",
                 playerTotalEnergy: "Energia total",
                 nextGroupTitle: "Grupo estimado na próxima semana",
@@ -1909,7 +2016,9 @@
             { id: "shovel", icon: "shovel", section: "normal", mul: 10 },
             { id: "bossCoin", icon: "boss-coin", section: "normal", div: 100 },
             { id: "farmCoin", icon: "farm-coin", section: "normal", div: 100 },
-            { id: "avalancheCoin", icon: "avalanche-coin", section: "normal", div: 20 }
+            { id: "avalancheCoin", icon: "avalanche-coin", section: "normal", div: 20 },
+            { id: "lostPotion", icon: "lost-potion", section: "normal", mul: 2.5 },
+            { id: "lostPuzzle", icon: "lost-puzzle", section: "normal", mul: 10 }
         ];
 
         const baseIds = ["baseEnergy", "extraEnergy"];
@@ -1933,7 +2042,8 @@
         function renderItems() {
             const containers = { magic: $("magicItems"), normal: $("normalItems") };
 
-            items.forEach(item => {
+            items.forEach((item, index) => {
+                const enterKey = index === items.length - 1 ? "done" : "next";
                 const rate = item.mul
                     ? `1 = ${item.mul.toLocaleString("en-US")}`
                     : `${item.div.toLocaleString("en-US")} = 1`;
@@ -1950,10 +2060,10 @@
                         <img src="images/${item.icon}.png" alt="" width="32" height="32">
                         <span class="item-text">
                             <span class="item-name" data-i18n="${item.id}"></span>
-                            <span class="item-rate num">${rate}<img class="bolt" src="images/energy.png" alt=""></span>
+                            <span class="item-rate num">${rate}<img class="bolt" src="images/energy.png" alt="" width="14" height="14"></span>
                         </span>
                     </label>
-                    <input class="input" id="${item.id}" type="text" autocomplete="off" ${inputAttrs} />
+                    <input class="input" id="${item.id}" type="text" autocomplete="off" enterkeyhint="${enterKey}" ${inputAttrs} />
                     <span class="item-conv num" id="${item.id}Conv">= 0</span>`;
                 containers[item.section].appendChild(tile);
             });
@@ -1970,7 +2080,15 @@
             });
 
             document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
-                el.setAttribute("placeholder", t(el.getAttribute("data-i18n-placeholder")));
+                el.placeholder = t(el.dataset.i18nPlaceholder);
+            });
+
+            document.querySelectorAll("[data-i18n-alt]").forEach(el => {
+                el.alt = t(el.dataset.i18nAlt);
+            });
+
+            document.querySelectorAll("[data-i18n-aria-label]").forEach(el => {
+                el.setAttribute("aria-label", t(el.dataset.i18nAriaLabel));
             });
 
             $("footerText").textContent = t("footer")(new Date().getFullYear());
@@ -2049,25 +2167,44 @@
             return parseNumber(input.value, decimalAllowedIds.includes(id));
         }
 
-        // 總能量 ≥ 1M 時改用 M 顯示（無條件捨去到小數 2 位，避免 999,999 被進位成 1M）
-        function formatCompact(num) {
-            if (!isFinite(num) || num < 1000000) return formatNumber(num);
-            const millions = Math.floor(num / 10000) / 100;
-            return millions.toLocaleString(LOCALE_MAP[currentLang] || "zh-TW", { maximumFractionDigits: 2 }) + "M";
-        }
-
+        // 新增語言時，這裡也要加上對應的數字格式 locale
         const LOCALE_MAP = {
             "zh-Hant": "zh-TW", en: "en-US", vi: "vi-VN", ja: "ja-JP", ko: "ko-KR",
             th: "th-TH", id: "id-ID", es: "es-ES", pt: "pt-BR"
         };
 
+        function locale() {
+            return LOCALE_MAP[currentLang] || "zh-TW";
+        }
+
+        // 總能量 ≥ 1M 時改用 M 顯示（無條件捨去到小數 2 位，避免 999,999 被進位成 1M）
+        function formatCompact(num) {
+            if (!isFinite(num) || num < 1000000) return formatNumber(num);
+            const millions = Math.floor(num / 10000) / 100;
+            return millions.toLocaleString(locale(), { maximumFractionDigits: 2 }) + "M";
+        }
+
         function formatNumber(num) {
             if (!isFinite(num)) return "∞";
-            const localeMap = {
-                "zh-Hant": "zh-TW", en: "en-US", vi: "vi-VN", ja: "ja-JP", ko: "ko-KR",
-                th: "th-TH", id: "id-ID", es: "es-ES", pt: "pt-BR"
-            };
-            return Math.floor(num).toLocaleString(localeMap[currentLang] || "zh-TW");
+            return Math.floor(num).toLocaleString(locale());
+        }
+
+        // 畫面顯示縮寫（1.23M），螢幕閱讀器讀完整數字。
+        // 不用 title（鍵盤叫不出來），也不在無角色的 <span> 上放 aria-label
+        function setCompactNumber(el, num) {
+            const full = formatNumber(num);
+            const compact = formatCompact(num);
+            if (compact === full) {
+                el.textContent = full;
+                return;
+            }
+            const visual = document.createElement("span");
+            visual.setAttribute("aria-hidden", "true");
+            visual.textContent = compact;
+            const spoken = document.createElement("span");
+            spoken.className = "visually-hidden";
+            spoken.textContent = full;
+            el.replaceChildren(visual, spoken);
         }
 
         /* ---------- 計算 ---------- */
@@ -2117,13 +2254,8 @@
             const group = filled ? findGroup(totalEnergy) : null;
 
             // 總能量與小計
-            // 玩家總能量：太大時顯示 M，完整數字放在 title / 螢幕閱讀器
-            ["totalEnergyText", "mobileTotalEnergyText"].forEach(id => {
-                const el = $(id);
-                el.textContent = formatCompact(totalEnergy);
-                el.title = formatNumber(totalEnergy);
-                el.setAttribute("aria-label", formatNumber(totalEnergy));
-            });
+            // 玩家總能量：太大時顯示 M，完整數字給螢幕閱讀器
+            ["totalEnergyText", "mobileTotalEnergyText"].forEach(id => setCompactNumber($(id), totalEnergy));
             $("magicSubtotal").textContent = formatNumber(itemData.magicKingdomEnergy);
             $("normalSubtotal").textContent = formatNumber(itemData.normalEventEnergy);
 
@@ -2190,8 +2322,8 @@
 
         function renderNext(filled, group, totalEnergy) {
             const textEl = $("nextText");
-            const progressWrap = $("progressWrap");
-            progressWrap.hidden = true;
+            const progress = $("progressBar");
+            progress.hidden = true;
 
             if (!filled) {
                 textEl.textContent = t("emptyHint");
@@ -2213,15 +2345,12 @@
 
             textEl.innerHTML = t("nextNeed")(formatNumber(nextRow.min - totalEnergy), displayRange(nextRow));
             const pct = Math.max(0, Math.min(1, (totalEnergy - group.min) / (nextRow.min - group.min)));
-            $("progressBar").style.width = `${pct * 100}%`;
-            progressWrap.hidden = false;
+            progress.value = pct;
+            progress.hidden = false;
         }
 
         function renderLadder(activeRangeLabel) {
-            const list = $("ladder");
-            list.innerHTML = "";
-
-            groupRows.forEach(row => {
+            const rows = groupRows.map(row => {
                 const li = document.createElement("li");
                 const label = document.createElement("span");
                 label.textContent = displayRange(row);
@@ -2236,8 +2365,10 @@
                     li.appendChild(tag);
                 }
 
-                list.appendChild(li);
+                return li;
             });
+
+            $("ladder").replaceChildren(...rows);
         }
 
         /* ---------- 輸入保存：切回遊戲看數字再回來，頁面被系統重新載入也不會遺失 ---------- */
@@ -2303,7 +2434,7 @@
                 undoBar.hidden = false;
                 clearTimeout(undoTimer);
                 undoTimer = setTimeout(hideUndo, 8000);
-                $("undoBtn").focus({ preventScroll: true });
+                $("undoBtn").focus();
             });
 
             $("undoBtn").addEventListener("click", () => {
@@ -2327,7 +2458,6 @@
 
         // 手機版：結果區進入畫面時，隱藏底部結果列
         function bindMobileBar() {
-            if (!("IntersectionObserver" in window)) return;
             const bar = $("mbar");
             const observer = new IntersectionObserver(entries => {
                 entries.forEach(entry => bar.classList.toggle("is-hidden", entry.isIntersecting));
